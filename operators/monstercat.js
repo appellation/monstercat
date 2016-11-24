@@ -5,7 +5,7 @@
 const twitch = require('twitch-get-stream')(process.env.TWITCH_CLIENT_ID);
 const ffmpeg = require('fluent-ffmpeg');
 
-class VoiceConnectionOperator   {
+class Monstercat   {
 
     /**
      *
@@ -56,4 +56,4 @@ class VoiceConnectionOperator   {
     }
 }
 
-module.exports = VoiceConnectionOperator;
+module.exports = Monstercat;

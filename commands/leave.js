@@ -3,7 +3,7 @@
  */
 
 function leave(client, msg, args)   {
-    if(!msg.guild.monstercat || !(msg.guild.monstercat instanceof require('../operators/voiceConnection'))) return;
+    if(!msg.guild.monstercat || !(msg.guild.monstercat instanceof require('../operators/monstercat'))) return;
     msg.guild.monstercat.stop();
 }
 
