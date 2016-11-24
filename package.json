@@ -1,0 +1,20 @@
+{
+  "name": "monstercat",
+  "version": "1.0.0",
+  "description": "A Monstercat stream for Discord.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "Will Nelson <nelson.will@live.com>",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^10.0.1",
+    "dotenv": "^2.0.0",
+    "fluent-ffmpeg": "^2.1.0",
+    "node-opus": "^0.2.4",
+    "request": "^2.79.0",
+    "twitch-get-stream": "^0.4.0"
+  }
+}
