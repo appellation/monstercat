@@ -4,7 +4,8 @@
 
 const Discord = require('discord.js');
 require('dotenv').config({
-    path: __dirname + '/.env'
+    path: __dirname + '/.env',
+    silent: true
 });
 
 const message = require('./handlers/message');
