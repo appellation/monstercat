@@ -23,7 +23,7 @@ class VoiceConnectionOperator   {
         return twitch.rawParsed('monstercat').then(streams => {
             const url = streams.pop().file;
 
-            this.processor = ffmpeg(url)
+            const processor = ffmpeg(url)
                 .inputFormat('hls')
                 .audioFrequency(48000)
                 .audioCodec('pcm_s16le')
@@ -31,18 +31,15 @@ class VoiceConnectionOperator   {
                 .audioChannels(2)
                 .on('error', console.error);
 
-            this.dispatcher = this.conn.playConvertedStream(this.processor.pipe());
+            return this.conn.playConvertedStream(processor.pipe());
         });
     }
 
     /**
      * Stop playing a Monstercat stream.
-     * **Doesn't work**
-     * @return {*}
+     * @return {undefined}
      */
     stop()  {
-        this.processor.kill();
-        this.dispatcher.end();
         return this.conn.disconnect();
     }
 
