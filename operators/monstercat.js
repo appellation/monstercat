@@ -4,22 +4,6 @@
 
 const twitch = require('twitch-get-stream')(process.env.TWITCH_CLIENT_ID);
 const ffmpeg = require('fluent-ffmpeg');
-const stream = new require('stream').Duplex;
-
-const getStream = twitch.rawParsed('monstercat').then(streams => {
-    const url = streams.pop().file;
-
-    const processor = ffmpeg(url)
-        .inputFormat('hls')
-        .audioFrequency(48000)
-        .audioCodec('pcm_s16le')
-        .format('s16le')
-        .audioChannels(2)
-        .on('error', console.error)
-        .output(stream);
-
-    return stream;
-});
 
 class Monstercat   {
 
@@ -36,10 +20,7 @@ class Monstercat   {
      * @return {Promise.<undefined>}
      */
     play()  {
-        return getStream.then(stream => {
-            return this.conn.playConvertedStream(stream.pipe());
-        });
-        /*return twitch.rawParsed('monstercat').then(streams => {
+        return twitch.rawParsed('monstercat').then(streams => {
             const url = streams.pop().file;
 
             const processor = ffmpeg(url)
@@ -50,8 +31,9 @@ class Monstercat   {
                 .audioChannels(2)
                 .on('error', console.error);
 
-            return this.conn.playConvertedStream(processor.pipe());
-        });*/
+            this.dispatcher = this.conn.playConvertedStream(processor.pipe());
+            return this.dispatcher;
+        });
     }
 
     /**
@@ -59,6 +41,7 @@ class Monstercat   {
      * @return {undefined}
      */
     stop()  {
+        this.dispatcher.end();
         return this.conn.disconnect();
     }
 

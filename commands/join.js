@@ -9,7 +9,7 @@ function join(client, msg, args)    {
     mc.check(msg.guild, msg.member).then(conn => {
         const thing = new mc(conn);
         msg.guild.monstercat = thing;
-        return thing.play().once('end', delete msg.guild.monstercat);
+        return thing.play();
     }).catch(console.error);
 }
 
