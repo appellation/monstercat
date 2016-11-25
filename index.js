@@ -9,10 +9,12 @@ require('dotenv').config({
 });
 
 const message = require('./handlers/message');
+const voiceStateUpdate = require('./handlers/voiceStateUpdate');
 
 const client = new Discord.Client();
 
 client.on('message', message);
+client.on('voiceStateUpdate', voiceStateUpdate);
 client.on('ready', () => {
     console.log('ready');
 });
