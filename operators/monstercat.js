@@ -23,15 +23,16 @@ class Monstercat   {
         return twitch.rawParsed('monstercat').then(streams => {
             const url = streams.pop().file;
 
-            const processor = ffmpeg(url)
+            this.processor = ffmpeg(url)
                 .inputFormat('hls')
                 .audioFrequency(48000)
                 .audioCodec('pcm_s16le')
                 .format('s16le')
                 .audioChannels(2)
-                .on('error', console.error);
+                .on('error', err => void err);
 
-            this.dispatcher = this.conn.playConvertedStream(processor.pipe());
+            this.dispatcher = this.conn.playConvertedStream(this.processor.pipe());
+            this.dispatcher.setVolume(0.25);
             return this.dispatcher;
         });
     }
@@ -41,7 +42,8 @@ class Monstercat   {
      * @return {undefined}
      */
     stop()  {
-        this.dispatcher.end();
+        if(this.processor) this.processor.kill('SIGTERM');
+        if(this.dispatcher) this.dispatcher.end();
         return this.conn.disconnect();
     }
 
