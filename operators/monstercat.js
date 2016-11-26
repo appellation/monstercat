@@ -55,7 +55,7 @@ class Monstercat   {
      */
     static check(guild, member)  {
         if(guild.voiceConnection) return Promise.resolve(guild.voiceConnection);
-        if(member.voiceChannel) return member.voiceChannel.join();
+        if(member.voiceChannel) return member.voiceChannel.join().catch(err => Promise.reject());
         return Promise.reject();
     }
 }
