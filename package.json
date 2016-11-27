@@ -10,7 +10,7 @@
   "author": "Will Nelson <nelson.will@live.com>",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "appellation/discord.js",
+    "discord.js": "hydrabolt/discord.js#indev",
     "dotenv": "^2.0.0",
     "fluent-ffmpeg": "^2.1.0",
     "node-opus": "^0.2.4",
