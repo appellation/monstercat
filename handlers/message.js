@@ -5,7 +5,8 @@
 const commands = {
     join: require('../commands/join'),
     leave: require('../commands/leave'),
-    vol: require('../commands/vol')
+    vol: require('../commands/vol'),
+    stats: require('../commands/stats')
 };
 
 function message(msg)   {
