@@ -4,6 +4,27 @@
 
 const twitch = require('twitch-get-stream')(process.env.TWITCH_CLIENT_ID);
 const ffmpeg = require('fluent-ffmpeg');
+const pass = require('stream').PassThrough;
+
+/**
+ *
+ * @type {Promise.<PassThrough>}
+ */
+const mcStream = twitch.rawParsed('monstercat').then(streams => {
+    const url = streams.pop().file;
+    const out = new pass;
+
+    ffmpeg(url)
+        .inputFormat('hls')
+        .audioFrequency(48000)
+        .audioCodec('pcm_s16le')
+        .format('s16le')
+        .audioChannels(2)
+        .on('error', err => void err)
+        .pipe(out);
+
+    return out;
+});
 
 class Monstercat   {
 
@@ -17,22 +38,13 @@ class Monstercat   {
 
     /**
      * Play a Monstercat stream.
-     * @return {Promise.<undefined>}
+     * @return {Promise.<StreamDispatcher>}
      */
     play()  {
-        return twitch.rawParsed('monstercat').then(streams => {
-            const url = streams.pop().file;
-
-            this.processor = ffmpeg(url)
-                .inputFormat('hls')
-                .audioFrequency(48000)
-                .audioCodec('pcm_s16le')
-                .format('s16le')
-                .audioChannels(2)
-                .on('error', err => void err);
-
-            this.dispatcher = this.conn.playConvertedStream(this.processor.pipe());
-            this.dispatcher.setVolume(0.25);
+        this.stream = new pass;
+        return mcStream.then(stream => {
+            stream.pipe(this.stream);
+            this.dispatcher = this.conn.playConvertedStream(this.stream);
             return this.dispatcher;
         });
     }
@@ -42,7 +54,7 @@ class Monstercat   {
      * @return {undefined}
      */
     stop()  {
-        if(this.processor) this.processor.kill('SIGTERM');
+        if(this.stream) this.stream.end();
         if(this.dispatcher) this.dispatcher.end();
         return this.conn.disconnect();
     }
