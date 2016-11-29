@@ -9,7 +9,8 @@ const commands = {
     stats: require('../commands/stats')
 };
 
-function messageCreate(msg)   {
+function messageCreate(e)   {
+    const msg = e.message;
     let parsed = msg.content.split(' ');
 
     if(parsed[0] !== `<@${process.env.DISCORD_CLIENT_ID}>` && parsed[0] !== `<!@${process.env.DISCORD_CLIENT_ID}>`) return;

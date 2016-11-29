@@ -3,9 +3,10 @@
  */
 
 function leave(msg, args)   {
-    if(!msg.guild.monstercat || !(msg.guild.monstercat instanceof require('../operators/monstercat'))) return;
-    msg.guild.monstercat.stop();
-    delete msg.guild.monstercat;
+    const mc = global.monstercat[msg.guild.id];
+    if(!mc || !(mc instanceof require('../operators/monstercat'))) return;
+    mc.stop();
+    delete global.monstercat[msg.guild.id];
 }
 
 module.exports = leave;
