@@ -7,7 +7,6 @@ const ffmpeg = require('fluent-ffmpeg');
 const pass = require('stream').PassThrough;
 
 /**
- *
  * @type {Promise.<PassThrough>}
  */
 const mcStream = twitch.rawParsed('monstercat').then(streams => {
@@ -17,8 +16,8 @@ const mcStream = twitch.rawParsed('monstercat').then(streams => {
     ffmpeg(url)
         .inputFormat('hls')
         .audioFrequency(48000)
-        .audioCodec('pcm_s16le')
-        .format('s16le')
+        .audioCodec('libopus')
+        .format('opus')
         .audioChannels(2)
         .on('error', err => void err)
         .pipe(out);
@@ -29,8 +28,8 @@ const mcStream = twitch.rawParsed('monstercat').then(streams => {
 class Monstercat   {
 
     /**
-     *
-     * @param {VoiceConnection} conn
+     * @constructor
+     * @param {IVoiceConnection} conn
      */
     constructor(conn)   {
         this.conn = conn;
@@ -38,14 +37,18 @@ class Monstercat   {
 
     /**
      * Play a Monstercat stream.
-     * @return {Promise.<StreamDispatcher>}
+     * @return {Promise.<AudioEncoderStream>}
      */
     play()  {
         this.stream = new pass;
         return mcStream.then(stream => {
             stream.pipe(this.stream);
-            this.dispatcher = this.conn.playConvertedStream(this.stream);
-            return this.dispatcher;
+            this.encoder = this.conn.createExternalEncoder({
+                type: 'OggOpusPlayer',
+                source: this.stream
+            });
+            this.encoder.play();
+            return this.encoder;
         });
     }
 
@@ -54,23 +57,22 @@ class Monstercat   {
      * @return {undefined}
      */
     stop()  {
-        if(this.stream) {
-            mcStream.then(stream => stream.unpipe(this.stream));
-            this.stream.end();
-        }
-        if(this.dispatcher) this.dispatcher.end();
+        if(this.encoder) this.encoder.stop();
         return this.conn.disconnect();
     }
 
     /**
      * Check voice connection.
-     * @param guild
-     * @param member
-     * @return {*}
+     * @param {IGuildMember} member
+     * @return {Promise.<IVoiceConnection>}
      */
-    static check(guild, member)  {
-        if(guild.voiceConnection) return Promise.resolve(guild.voiceConnection);
-        if(member.voiceChannel) return member.voiceChannel.join().catch(err => Promise.reject());
+    static check(member)  {
+        const clientChannel = member.guild.voiceChannels.find(channel => channel.joined);
+        if(typeof clientChannel !== 'undefined') return Promise.resolve(clientChannel.getVoiceConnectionInfo().voiceConnection);
+
+        const memberChannel = member.getVoiceChannel();
+        if(memberChannel) return memberChannel.join().then(info => info.voiceConnection).catch(err => Promise.reject());
+
         return Promise.reject();
     }
 }

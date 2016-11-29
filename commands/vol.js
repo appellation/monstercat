@@ -2,7 +2,7 @@
  * Created by Will on 11/24/2016.
  */
 
-function vol(client, msg, args)    {
+function vol(msg, args)    {
     if(!msg.guild.monstercat) return;
     const disp = msg.guild.monstercat.dispatcher;
 

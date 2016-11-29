@@ -3,7 +3,7 @@
  */
 
 const mc = require('../operators/monstercat');
-function join(client, msg, args)    {
+function join(msg, args)    {
     if(msg.guild.monstercat) return;
 
     mc.check(msg.guild, msg.member).then(conn => {

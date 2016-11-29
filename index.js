@@ -2,20 +2,22 @@
  * Created by Will on 11/23/2016.
  */
 
-const Discord = require('discord.js');
+const Discord = require('discordie');
 require('dotenv').config({
     path: __dirname + '/.env',
     silent: true
 });
 
-const message = require('./handlers/message');
-const voiceStateUpdate = require('./handlers/voiceStateUpdate');
+const message_create = require('./handlers/message_create');
+const voice_channel_leave = require('./handlers/voice_channel_leave');
 
-const client = new Discord.Client();
+const client = new Discord();
 
-client.on('message', message);
-client.on('voiceStateUpdate', voiceStateUpdate);
-client.on('ready', () => {
+client.Dispatcher.on('MESSAGE_CREATE', message_create);
+client.Dispatcher.on('VOICE_CHANNEL_LEAVE', voice_channel_leave);
+client.Dispatcher.on('GATEWAY_READY', () => {
     console.log('ready');
 });
-client.login(process.env.DISCORD_TOKEN);
+client.connect({
+    token: process.env.DISCORD_TOKEN
+});
