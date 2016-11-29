@@ -54,7 +54,10 @@ class Monstercat   {
      * @return {undefined}
      */
     stop()  {
-        if(this.stream) this.stream.end();
+        if(this.stream) {
+            mcStream.then(stream => stream.unpipe(this.stream));
+            this.stream.end();
+        }
         if(this.dispatcher) this.dispatcher.end();
         return this.conn.disconnect();
     }
