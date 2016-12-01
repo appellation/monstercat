@@ -44,13 +44,17 @@ class Monstercat   {
         });
     }
 
+    kill()  {
+        if(this.encoder) this.encoder.stop();
+        if(this.stream) this.stream.kill('SIGTERM');
+    }
+
     /**
      * Stop playing a Monstercat stream.
      * @return {undefined}
      */
     stop()  {
-        if(this.encoder) this.encoder.stop();
-        if(this.stream) this.stream.kill('SIGTERM');
+        this.kill();
         return this.conn.disconnect();
     }
 
