@@ -3,10 +3,12 @@
  */
 
 const mc = require('../operators/monstercat');
+const vc = require('../operators/vc');
+
 function join(msg, args)    {
     if(global.monstercat[msg.guild.id]) return;
 
-    mc.check(msg.member).then(conn => {
+    vc.check(msg.member).then(conn => {
         const thing = new mc(conn);
         global.monstercat[msg.guild.id] = thing;
         return thing.play();

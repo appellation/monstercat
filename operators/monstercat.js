@@ -4,6 +4,7 @@
 
 const twitch = require('twitch-get-stream')(process.env.TWITCH_CLIENT_ID);
 const ffmpeg = require('fluent-ffmpeg');
+const VC = require('./vc');
 
 const streamURL = twitch.rawParsed('monstercat').then(urls => {
     return urls.pop().file;
@@ -17,6 +18,7 @@ class Monstercat   {
      */
     constructor(conn)   {
         this.conn = conn;
+        this.vc = new VC(conn);
     }
 
     /**
@@ -56,21 +58,6 @@ class Monstercat   {
     stop()  {
         this.kill();
         return this.conn.disconnect();
-    }
-
-    /**
-     * Check voice connection.
-     * @param {IGuildMember} member
-     * @return {Promise.<IVoiceConnection>}
-     */
-    static check(member)  {
-        const clientChannel = member.guild.voiceChannels.find(channel => channel.joined);
-        if(typeof clientChannel !== 'undefined') return Promise.resolve(clientChannel.getVoiceConnectionInfo().voiceConnection);
-
-        const memberChannel = member.getVoiceChannel();
-        if(memberChannel) return memberChannel.join().then(info => info.voiceConnection).catch(err => Promise.reject());
-
-        return Promise.reject();
     }
 }
 
