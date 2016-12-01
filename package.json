@@ -14,7 +14,6 @@
     "dotenv": "^2.0.0",
     "fluent-ffmpeg": "^2.1.0",
     "node-opus": "^0.2.4",
-    "request": "^2.79.0",
     "twitch-get-stream": "^0.4.0"
   }
 }

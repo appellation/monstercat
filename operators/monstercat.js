@@ -4,25 +4,9 @@
 
 const twitch = require('twitch-get-stream')(process.env.TWITCH_CLIENT_ID);
 const ffmpeg = require('fluent-ffmpeg');
-const pass = require('stream').PassThrough;
 
-/**
- * @type {Promise.<PassThrough>}
- */
-const mcStream = twitch.rawParsed('monstercat').then(streams => {
-    const url = streams.pop().file;
-    const out = new pass;
-
-    ffmpeg(url)
-        .inputFormat('hls')
-        .audioFrequency(48000)
-        .audioCodec('libopus')
-        .format('opus')
-        .audioChannels(2)
-        .on('error', err => void err)
-        .pipe(out);
-
-    return out;
+const streamURL = twitch.rawParsed('monstercat').then(urls => {
+    return urls.pop().file;
 });
 
 class Monstercat   {
@@ -40,13 +24,21 @@ class Monstercat   {
      * @return {Promise.<AudioEncoderStream>}
      */
     play()  {
-        this.stream = new pass;
-        return mcStream.then(stream => {
-            stream.pipe(this.stream);
+        return streamURL.then(url => {
+            this.stream = ffmpeg(url)
+                .inputFormat('hls')
+                .audioBitrate(48)
+                .audioFrequency(48000)
+                .audioCodec('libopus')
+                .format('opus')
+                .audioChannels(2)
+                .on('error', err => void err);
+
             this.encoder = this.conn.createExternalEncoder({
                 type: 'OggOpusPlayer',
-                source: this.stream
+                source: this.stream.pipe()
             });
+
             this.encoder.play();
             return this.encoder;
         });
@@ -58,6 +50,7 @@ class Monstercat   {
      */
     stop()  {
         if(this.encoder) this.encoder.stop();
+        if(this.stream) this.stream.kill('SIGTERM');
         return this.conn.disconnect();
     }
 
