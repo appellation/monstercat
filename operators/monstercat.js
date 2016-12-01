@@ -42,7 +42,7 @@ class Monstercat   {
      * @return {undefined}
      */
     stop()  {
-        if(this.processor) this.processor.kill('SIGTERM');
+        if(this.stream) this.stream.end();
         if(this.dispatcher) this.dispatcher.end();
         return this.conn.disconnect();
     }
