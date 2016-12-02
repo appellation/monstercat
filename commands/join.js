@@ -3,12 +3,15 @@
  */
 
 const mc = require('../operators/monstercat');
-function join(client, msg, args)    {
-    if(msg.guild.monstercat) return;
+const vc = require('../operators/vc');
+const storage = require('../operators/storage');
 
-    mc.check(msg.guild, msg.member).then(conn => {
+function join(msg, args)    {
+    if(storage.monstercat[msg.guild.id]) return;
+
+    vc.check(msg.member).then(conn => {
         const thing = new mc(conn);
-        msg.guild.monstercat = thing;
+        storage.monstercat[msg.guild.id] = thing;
         return thing.play();
     }).catch(console.error);
 }

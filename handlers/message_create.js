@@ -9,7 +9,8 @@ const commands = {
     stats: require('../commands/stats')
 };
 
-function message(msg)   {
+function messageCreate(e)   {
+    const msg = e.message;
     let parsed = msg.content.split(' ');
 
     if(parsed[0] !== `<@${process.env.DISCORD_CLIENT_ID}>` && parsed[0] !== `<!@${process.env.DISCORD_CLIENT_ID}>`) return;
@@ -17,7 +18,7 @@ function message(msg)   {
 
     if(msg.author.bot) return;
     if(typeof commands[parsed[0]] !== 'function') return;
-    commands[parsed[0]](msg.client, msg, parsed.slice(1));
+    commands[parsed[0]](msg, parsed.slice(1));
 }
 
-module.exports = message;
+module.exports = messageCreate;
