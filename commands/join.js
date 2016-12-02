@@ -4,13 +4,14 @@
 
 const mc = require('../operators/monstercat');
 const vc = require('../operators/vc');
+const storage = require('../operators/storage');
 
 function join(msg, args)    {
-    if(global.monstercat[msg.guild.id]) return;
+    if(storage.monstercat[msg.guild.id]) return;
 
     vc.check(msg.member).then(conn => {
         const thing = new mc(conn);
-        global.monstercat[msg.guild.id] = thing;
+        storage.monstercat[msg.guild.id] = thing;
         return thing.play();
     }).catch(console.error);
 }

@@ -7,16 +7,18 @@ require('dotenv').config({
     path: __dirname + '/.env',
     silent: true
 });
+const storage = require('./operators/storage');
 
 const message_create = require('./handlers/message_create');
 const voice_channel_leave = require('./handlers/voice_channel_leave');
 
 const client = new Discord();
+storage.client = client;
 
 client.Dispatcher.on('MESSAGE_CREATE', message_create);
 // client.Dispatcher.on('VOICE_CHANNEL_LEAVE', voice_channel_leave);
 client.Dispatcher.on('GATEWAY_READY', () => {
-    global.monstercat = {};
+    storage.monstercat = {};
     console.log('ready');
 });
 client.connect({
