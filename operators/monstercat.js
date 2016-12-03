@@ -42,6 +42,7 @@ class Monstercat   {
             });
 
             this.encoder.play();
+            this.conn.getEncoder().setVolume(20);
             return this.encoder;
         });
     }
