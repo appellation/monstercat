@@ -6,7 +6,8 @@ const commands = {
     join: require('../commands/join'),
     leave: require('../commands/leave'),
     // vol: require('../commands/vol'),
-    stats: require('../commands/stats')
+    stats: require('../commands/stats'),
+    invite: require('../commands/invite')
 };
 
 function messageCreate(e)   {
