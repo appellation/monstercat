@@ -20,8 +20,7 @@ client.Dispatcher.on('MESSAGE_CREATE', message_create);
 client.Dispatcher.on('GATEWAY_READY', () => {
     console.log('ready');
 });
-// client.Dispatcher.on('DISCONNECTED', () => process.exit(0));
-client.autoReconnect.enable();
+client.Dispatcher.on('DISCONNECTED', () => process.exit(0));
 client.connect({
     token: process.env.DISCORD_TOKEN
 });
