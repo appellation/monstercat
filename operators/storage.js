@@ -4,5 +4,5 @@
 
 module.exports = {
     client: null,
-    monstercat: {}
+    monstercat: new Map()
 };

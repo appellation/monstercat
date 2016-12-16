@@ -7,11 +7,11 @@ const vc = require('../operators/vc');
 const storage = require('../operators/storage');
 
 function join(msg, args)    {
-    if(storage.monstercat[msg.guild.id]) return;
+    if(storage.monstercat.has(msg.guild.id)) return;
 
     vc.check(msg.member).then(conn => {
         const thing = new mc(conn);
-        storage.monstercat[msg.guild.id] = thing;
+        storage.monstercat.set(msg.guild.id, thing);
         return thing.play();
     }).catch(console.error);
 }

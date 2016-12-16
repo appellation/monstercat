@@ -8,7 +8,7 @@ function leave(msg, args)   {
     const mc = storage.monstercat[msg.guild.id];
     if(!mc || !(mc instanceof require('../operators/monstercat'))) return;
     mc.stop();
-    delete storage.monstercat[msg.guild.id];
+    storage.monstercat.delete(msg.guild.id);
 }
 
 module.exports = leave;

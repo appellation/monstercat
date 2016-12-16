@@ -20,7 +20,11 @@ client.Dispatcher.on('MESSAGE_CREATE', message_create);
 client.Dispatcher.on('GATEWAY_READY', () => {
     console.log('ready');
 });
-client.Dispatcher.on('DISCONNECTED', () => process.exit(0));
+client.Dispatcher.on('GATEWAY_RESUMED', () => {
+    for(const mc of storage.monstercat) mc.play();
+});
+// client.Dispatcher.on('DISCONNECTED', () => process.exit(0));
+client.autoReconnect.enable();
 client.connect({
     token: process.env.DISCORD_TOKEN
 });
