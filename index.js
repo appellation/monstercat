@@ -21,7 +21,10 @@ client.Dispatcher.on('GATEWAY_READY', () => {
     console.log('ready');
 });
 client.Dispatcher.on('GATEWAY_RESUMED', () => {
-    for(const mc of storage.monstercat) mc.play();
+    for(const mc of storage.monstercat) {
+        mc.kill();
+        mc.play();
+    }
 });
 // client.Dispatcher.on('DISCONNECTED', () => process.exit(0));
 client.autoReconnect.enable();
