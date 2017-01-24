@@ -34,3 +34,5 @@ module.exports = (msg, args) =>  {
         return msg.reply(input + ':x: **Error:**\n```js\n' + (err.message || err) + '\n```');
     });
 };
+
+exports.validator = msg => msg.author.id === '116690352584392704';
