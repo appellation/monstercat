@@ -28,9 +28,9 @@ module.exports = client => {
     ircClient.on('CHANMSG', data => {
         if(data.receiver !== '#monstercat' || data.sender !== 'monstercat') return;
 
-        let parsed = data.message.match(/^Now Playing: (.+) - Listen now: \S+ Tweet it: \S+$/);
+        let parsed = data.message.match(/^Now Playing: (.+) by (.+) - Listen now: \S+ Tweet it: \S+$/);
         if(!parsed) return;
-        parsed = parsed[1];
+        parsed = `${parsed[1]} - ${parsed[2]}`;
 
         client.user.setGame(parsed);
     });
