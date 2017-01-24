@@ -2,17 +2,19 @@
   "name": "monstercat",
   "version": "1.0.0",
   "description": "A Monstercat stream for Discord.",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node src/index.js"
   },
   "author": "Will Nelson <nelson.will@live.com>",
   "license": "ISC",
   "dependencies": {
-    "discordie": "^0.9.0",
+    "discord-handles": "github:appellation/handles#master",
+    "discord.js": "github:hydrabolt/discord.js#indev-prism",
     "dotenv": "^2.0.0",
     "fluent-ffmpeg": "^2.1.0",
+    "node-irc": "0.0.4",
     "node-opus": "^0.2.4",
     "twitch-get-stream": "^0.4.0"
   }
