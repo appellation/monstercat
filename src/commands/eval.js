@@ -2,7 +2,7 @@
  * Created by Will on 1/23/2017.
  */
 
-module.exports = (msg, args) =>  {
+exports.func = (msg, args) =>  {
     const input = ':arrow_right: **Input:**\n```js\n' + args.join(' ') + '\n```';
     return new Promise((resolve, reject) => {
         let ev;
