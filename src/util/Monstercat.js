@@ -49,10 +49,18 @@ module.exports = class Monstercat {
     }
 
     initialize(client)  {
-        if(this.broadcaster) this.broadcaster.end();
+        if(this.broadcaster) this.broadcaster.end('initializing');
         else if(client) this.broadcaster = client.createVoiceBroadcast();
         else return;
 
+        this.broadcaster.once('end', reason => {
+            if(!reason) this._startStream();
+        });
+
+        this._startStream();
+    }
+
+    _startStream()  {
         twitch.get('monstercat').then(streams => {
             const stream =
                 ffmpeg(streams.pop().url)
