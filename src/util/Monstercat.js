@@ -58,7 +58,7 @@ module.exports = class Monstercat {
                 ffmpeg(streams.pop().url)
                     .inputFormat('hls')
                     .format('mp3');
-            this.broadcaster.playStream(stream);
+            this.broadcaster.playStream(stream, { volume: 0.1 });
         });
     }
 
