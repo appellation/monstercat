@@ -12,10 +12,6 @@ module.exports = client => {
     client.monstercat = new Monstercat(broadcaster);
     client.monstercat.initialize();
 
-    client.on('ready', () => {
-        client.monstercat.initialize(client);
-    });
-
     client.user.setGame('Monstercat', twitchURL);
 
     const ircClient = new Irc('irc.chat.twitch.tv', 6667, process.env.TWITCH_USERNAME, process.env.TWITCH_USERNAME, process.env.TWITCH_OAUTH_PASSWORD);
