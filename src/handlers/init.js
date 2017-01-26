@@ -3,23 +3,20 @@
  */
 
 const Monstercat = require('../util/Monstercat');
-const twitch = require('twitch-get-stream')(process.env.TWITCH_CLIENT_ID);
-const ffmpeg = require('fluent-ffmpeg');
 const Irc = require('node-irc');
 
 const twitchURL = 'https://www.twitch.tv/monstercat';
 
 module.exports = client => {
     const broadcaster = client.createVoiceBroadcast();
-    twitch.get('monstercat').then(streams => {
-        const stream =
-            ffmpeg(streams.pop().url)
-                .inputFormat('hls')
-                .format('mp3');
-        broadcaster.playStream(stream);
+    client.monstercat = new Monstercat(broadcaster);
+    client.monstercat.initialize();
+
+    client.on('ready', () => {
+        client.monstercat.initialize(client);
     });
 
-    client.monstercat = new Monstercat(broadcaster);
+    client.user.setGame('Monstercat', twitchURL);
 
     const ircClient = new Irc('irc.chat.twitch.tv', 6667, process.env.TWITCH_USERNAME, process.env.TWITCH_USERNAME, process.env.TWITCH_OAUTH_PASSWORD);
     ircClient.once('ready', () => {
@@ -28,11 +25,11 @@ module.exports = client => {
     ircClient.on('CHANMSG', data => {
         if(data.receiver !== '#monstercat' || data.sender !== 'monstercat') return;
 
-        let parsed = data.message.match(/^Now Playing: (.+) by (.+) - Listen now: \S+ Tweet it: \S+$/);
+        let parsed = data.message.match(/^Now Playing: (.+) by (.+)( - Listen now: \S+ Tweet it: \S+$)/);
         if(!parsed) return;
         parsed = `${parsed[1]} - ${parsed[2]}`;
 
-        client.user.setGame(parsed);
+        client.user.setGame(parsed, twitchURL);
     });
     ircClient.connect();
 };

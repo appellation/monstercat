@@ -11,7 +11,7 @@ const handles = require('discord-handles')({
 const client = new Discord.Client();
 
 client.on('message', handles);
-client.on('ready', () => {
+client.once('ready', () => {
     console.log('ready');
     require('./handlers/init')(client);
 });
