@@ -48,13 +48,11 @@ module.exports = class Monstercat {
         this.dispatchers.delete(guild.id);
     }
 
-    initialize(client)  {
+    initialize()  {
         if(this.broadcaster) this.broadcaster.end('initializing');
-        else if(client) this.broadcaster = client.createVoiceBroadcast();
-        else return;
 
         this.broadcaster.once('end', reason => {
-            if(!reason) this._startStream();
+            if(!reason) this.initialize();
         });
 
         this._startStream();

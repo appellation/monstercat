@@ -8,9 +8,8 @@ const Irc = require('node-irc');
 const twitchURL = 'https://www.twitch.tv/monstercat';
 
 module.exports = client => {
-    const broadcaster = client.createVoiceBroadcast();
-    client.monstercat = new Monstercat(broadcaster);
-    client.monstercat.initialize();
+    checkBroadcaster(client);
+    client.on('ready', () => checkBroadcaster(client));
 
     client.user.setGame('Monstercat', twitchURL);
 
@@ -21,11 +20,18 @@ module.exports = client => {
     ircClient.on('CHANMSG', data => {
         if(data.receiver !== '#monstercat' || data.sender !== 'monstercat') return;
 
-        let parsed = data.message.match(/^Now Playing: (.+) by (.+)( - Listen now: \S+ Tweet it: \S+$)/);
+        let parsed = data.message.match(/^Now Playing: (.+) by (.+)/);
         if(!parsed) return;
-        parsed = `${parsed[1]} - ${parsed[2]}`;
+        parsed = `${parsed[1]} - ${parsed[2].replace(/ - Listen now: \S+ Tweet it: \S+$/, '')}`;
 
         client.user.setGame(parsed, twitchURL);
     });
     ircClient.connect();
 };
+
+function checkBroadcaster(client)  {
+    if(client.monstercat) client.monstercat.initialize(client);
+    else client.monstercat = new Monstercat(client.createVoiceBroadcast());
+
+    client.monstercat.initialize();
+}
