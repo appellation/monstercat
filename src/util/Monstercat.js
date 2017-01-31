@@ -32,7 +32,9 @@ module.exports = class Monstercat {
     connect(member) {
         if(!member || this.dispatchers.has(member.guild.id)) return;
         return Monstercat._checkConnection(member).then(conn => {
-            this.dispatchers.set(member.guild.id, conn.playBroadcast(this.broadcaster));
+            const dispatcher = conn.playBroadcast(this.broadcaster);
+            dispatcher.setVolumeLogarithmic(0.1);
+            this.dispatchers.set(member.guild.id, dispatcher);
         });
     }
 
@@ -64,7 +66,7 @@ module.exports = class Monstercat {
                 ffmpeg(streams.pop().url)
                     .inputFormat('hls')
                     .format('mp3');
-            this.broadcaster.playStream(stream, { volume: 0.1 });
+            this.broadcaster.playStream(stream);
         });
     }
 
