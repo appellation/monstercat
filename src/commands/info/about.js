@@ -6,7 +6,7 @@ module.exports = class About extends Command {
     constructor(client) {
         super(client, {
             name: 'about',
-            aliases: ['info'],
+            aliases: ['info', 'invite'],
             group: 'info',
             memberName: 'about',
             description: 'Display\'s information about the bot.'
