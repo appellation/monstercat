@@ -10,7 +10,7 @@
 </div>
 
 ## About
-Bringing top quality Monstercat streams to Discord since tomorrow. The bot only requires minimal permissions which none are administrative priviledges. This bot will bring even more awesomeness to your server, so what are you waiting for? Invite it and get the party started! :tada:
+Bringing top quality Monstercat streams to Discord since tomorrow. The bot only requires minimal permissions which none are administrative privileges. This bot will bring even more awesomeness to your server, so what are you waiting for? Invite it and get the party started! :tada:
 
 **Invite Link**: https://discordapp.com/oauth2/authorize?permissions=3165184&scope=bot&client_id=251253454826110977
 
