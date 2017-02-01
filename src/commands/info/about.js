@@ -18,7 +18,9 @@ module.exports = class About extends Command {
         .setColor(3447003)
         .setDescription(stripIndents`
         **About Monstercat**
-        Some neat description about the bot that I will write soon :).`)
+        Bringing top quality Monstercat streams to Discord since tomorrow. This bot will bring even more awesomeness to your server, so what are you waiting for? Invite it and get the party started! 🎉
+        
+        Invite Link: [https://discordapp.com/oauth2/authorize?permissions=3165184&scope=bot&client_id=251253454826110977].`)
         .setThumbnail('https://cdn.discordapp.com/avatars/251253454826110977/2acc97e13036b458fd4a7635bd7e931d.jpg?size=1024');
         return msg.embed(embed);
     }
