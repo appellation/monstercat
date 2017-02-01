@@ -8,6 +8,7 @@ const Irc = require('node-irc');
 const twitchURL = 'https://www.twitch.tv/monstercat';
 
 module.exports = client => {
+    console.log('initializing');
     checkBroadcaster(client);
     client.on('ready', () => checkBroadcaster(client));
 
