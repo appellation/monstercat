@@ -5,18 +5,21 @@ const stripIndents = require('common-tags').stripIndents;
 module.exports = class Invite extends Command {
     constructor(client) {
         super(client, {
-            name: 'invite',
+            name: 'about',
+            aliases: ['info'],
             group: 'info',
-            memberName: 'invite',
-            description: 'Display\'s the bot\'s invite link.' 
+            memberName: 'about',
+            description: 'Display\'s the bot\'s invitation link.'
         });
     }
     
     async run(msg) {
         const embed = new RichEmbed()
-        .setAuthor(this.client.user.username, this.client.user.avatarURL)
         .setColor(3447003)
-        .setDescription(stripIndents`In order to invite me to your server, click [here](https://google.com)`);
+        .setDescription(stripIndents`
+        **About Monstercat**
+        Some neat description about the bot that I will write soon :).`)
+        .setThumbnail('https://cdn.discordapp.com/avatars/251253454826110977/2acc97e13036b458fd4a7635bd7e931d.jpg?size=1024');
         return msg.embed(embed);
     }
 };
