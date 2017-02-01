@@ -68,4 +68,4 @@ client.registry
     .registerDefaults()
     .registerCommandsIn(path.join(__dirname, 'commands'));
     
-client.login(process.env.TOKEN);
+client.login(process.env.DISCORD_TOKEN);
