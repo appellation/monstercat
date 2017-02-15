@@ -51,6 +51,7 @@ module.exports = class Monstercat {
     }
 
     initialize()  {
+        console.log('initializing');
         if(this.broadcaster) this.broadcaster.end('initializing');
 
         this.broadcaster.once('end', reason => {
