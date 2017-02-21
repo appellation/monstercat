@@ -23,6 +23,12 @@ module.exports = class Monstercat {
          * @type {VoiceBroadcast}
          */
         this.broadcaster = broadcaster;
+
+        /**
+         * The audio stream.
+         * @type {?ReadableStream}
+         */
+        this.stream = null;
     }
 
     /**
@@ -63,11 +69,12 @@ module.exports = class Monstercat {
 
     _startStream()  {
         twitch.get('monstercat').then(streams => {
-            const stream =
+            if(this.stream) this.stream.kill();
+            this.stream =
                 ffmpeg(streams.pop().url)
                     .inputFormat('hls')
                     .format('mp3');
-            this.broadcaster.playStream(stream);
+            this.broadcaster.playStream(this.stream);
         });
     }
 
