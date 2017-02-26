@@ -1,6 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { RichEmbed } = require('discord.js');
 const moment = require('moment');
+const { stripIndents } = require('common-tags')
 require('moment-duration-format');
 
 module.exports = class Stats extends Command {
@@ -18,18 +19,15 @@ module.exports = class Stats extends Command {
     }
 
     async run(msg) {
-        const embed = new RichEmbed()
-        .setAuthor('Monstercat Statistics', this.client.user.avatarURL)
-        .setColor(8450847)
-        .addField('Memory Usage', `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`, true)
-        .addField('Uptime', moment.duration(this.client.uptime).format('d[ days], h[ hours], m[ minutes and ]s[ seconds]'), true)
-        .addField('\u200b', '\u200b', true)
-        .addField('Servers', `${this.client.guilds.size}`, true)
-        .addField('Channels', `${this.client.channels.size}`, true)
-        .addField('Users', `${this.client.guilds.map(guild => guild.memberCount).reduce((a, b) => a + b)}`, true)
-        .addField('Bot Support', '[Join](https://discord.gg/DPuaDvP)', true)
-        .addField('Authors', 'appellation#5297, Fire#7374', true)
-        .setTimestamp();
-        msg.embed(embed);
+        return msg.channel.sendMessage(stripIndents`
+        **Servers:** ${this.client.guilds.size}
+        **Users:** ${this.client.guilds.reduce((a, b) => a + b.memberCount, 0)}
+        **Channels:** ${this.client.channels.size}
+        **Connections:** ${this.client.monstercat.dispatchers.size}
+        
+        __Process info__
+        **Memory:** ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB
+        **Uptime:** ${moment.duration(this.client.uptime).format('d[ days], h[ hours], m[ minutes and ]s[ seconds]')}
+        `);
     }
 };
