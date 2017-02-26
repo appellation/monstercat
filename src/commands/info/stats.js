@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { RichEmbed } = require('discord.js');
 const moment = require('moment');
-const { stripIndents } = require('common-tags')
+const { stripIndents } = require('common-tags');
 require('moment-duration-format');
 
 module.exports = class Stats extends Command {
