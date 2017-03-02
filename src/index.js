@@ -6,7 +6,8 @@ const sqlite = require('sqlite');
 
 const client = new Commando.Client({
     owner: process.env.OWNER,
-    invite: '',
+    invite: 'https://discord.gg/DPuaDvP',
+    commandPrefix: 'mc!',
     unknownCommandResponse: false,
     disableEveryone: true,
     autoreconnect: true,
