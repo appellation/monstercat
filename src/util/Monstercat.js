@@ -39,7 +39,7 @@ module.exports = class Monstercat {
         if(!member || this.dispatchers.has(member.guild.id)) return;
         return Monstercat._checkConnection(member).then(conn => {
             const dispatcher = conn.playBroadcast(this.broadcaster);
-            dispatcher.setVolumeLogarithmic(0.2);
+            dispatcher.setVolumeLogarithmic(0.3);
             this.dispatchers.set(member.guild.id, dispatcher);
         });
     }
