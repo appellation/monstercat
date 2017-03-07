@@ -54,6 +54,9 @@ client
 		if (oldMember.voiceChannel && oldMember.voiceChannel.members.size === 1) {
 			return client.monstercat.disconnect(oldMember.guild);
 		}
+	})
+	.on('guildDelete', guild => {
+		client.monstercat.disconnect(guild);
 	});
 
 client.setProvider(
