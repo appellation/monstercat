@@ -22,7 +22,7 @@ module.exports = client => {
 
         let parsed = data.message.match(/^Now Playing: (.+) by (.+)/);
         if(!parsed) return;
-        parsed = `${parsed[1]} - ${parsed[2].replace(/ - (Listen now: \S+ Tweet it: \S+|Listen on Spotify: \S+)$/, '')}`;
+        parsed = `${parsed[2].replace(/ - (Listen now: \S+ Tweet it: \S+|Listen on Spotify: \S+)$/, '')} - ${parsed[1]}`;
 
         client.user.setGame(parsed, twitchURL);
     });
