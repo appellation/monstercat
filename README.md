@@ -15,7 +15,7 @@ Bringing top quality Monstercat streams to Discord since tomorrow. The bot only 
 **Invite Link**: https://discordapp.com/oauth2/authorize?permissions=3165184&scope=bot&client_id=251253454826110977
 
 ## Commands
-All commaands are prefixed by the bot's mention or you can set your own prefix by `!prefix newprefix`.
+All commands are prefixed by the bot's mention or you can set your own prefix by `mc!prefix newprefix`.
 - `about` - Displays information about the bot and invite link.
 - `stats` - Displays statistical information about the bot.
 - `join` - The bot will join the voice channel of the author, if it's not already in one.
