@@ -1,5 +1,4 @@
 const { Command } = require('discord.js-commando');
-const { RichEmbed } = require('discord.js');
 const moment = require('moment');
 const { stripIndents } = require('common-tags');
 require('moment-duration-format');
@@ -10,7 +9,7 @@ module.exports = class Stats extends Command {
             name: 'stats',
             group: 'info',
             memberName: 'stats',
-            description: 'Display\'s stats about the bot.',
+            description: 'Displays stats about the bot.',
             throttling: {
                 usages: 1,
                 duration: 30
