@@ -59,8 +59,8 @@ module.exports = class Monstercat {
     initialize()  {
         if(this.broadcaster) this.broadcaster.end('initializing');
 
-        this.broadcaster.once('end', reason => {
-            if(!reason) this.initialize();
+        this.broadcaster.once('end', () => {
+            this.initialize();
         });
 
         this._startStream();
