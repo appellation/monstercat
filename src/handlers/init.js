@@ -30,8 +30,6 @@ module.exports = client => {
 };
 
 function checkBroadcaster(client)  {
-    if(client.monstercat) client.monstercat.initialize(client);
-    else client.monstercat = new Monstercat(client.createVoiceBroadcast());
-
+    if(!client.monstercat) client.monstercat = new Monstercat(client.createVoiceBroadcast());
     client.monstercat.initialize();
 }
