@@ -4,6 +4,8 @@
 
 const twitch = require('twitch-get-stream')(process.env.TWITCH_CLIENT_ID);
 const ffmpeg = require('fluent-ffmpeg');
+const { PassThrough } = require('stream');
+
 module.exports = class Monstercat {
 
     /**
@@ -25,10 +27,10 @@ module.exports = class Monstercat {
         this.broadcaster = broadcaster;
 
         /**
-         * The audio stream.
-         * @type {?ReadableStream}
+         * The ffmpeg command to transcode before broadcasting.
+         * @type {?PassThrough}
          */
-        this.stream = null;
+        this.ffmpeg = null;
     }
 
     /**
@@ -68,12 +70,14 @@ module.exports = class Monstercat {
 
     _startStream()  {
         twitch.get('monstercat').then(streams => {
-            if(this.stream) this.stream.kill();
-            this.stream =
-                ffmpeg(streams.pop().url)
-                    .inputFormat('hls')
-                    .format('mp3');
-            this.broadcaster.playStream(this.stream);
+            if(this.ffmpeg) this.ffmpeg.kill();
+            this.ffmpeg = ffmpeg(streams.pop().url)
+                .inputFormat('hls')
+                .format('mp3');
+
+            const stream = new PassThrough();
+            this.ffmpeg.pipe(stream);
+            this.broadcaster.playStream(stream);
         });
     }
 
