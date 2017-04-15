@@ -28,7 +28,7 @@ module.exports = class Monstercat {
 
         /**
          * The ffmpeg command to transcode before broadcasting.
-         * @type {?PassThrough}
+         * @type {?FfmpegCommand}
          */
         this.ffmpeg = null;
     }
