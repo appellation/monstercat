@@ -3,7 +3,7 @@
  */
 
 const twitch = require('twitch-get-stream')(process.env.TWITCH_CLIENT_ID);
-const ffmpeg = require('fluent-ffmpeg');
+const m3u8 = require('m3u8stream')
 const { PassThrough } = require('stream');
 
 module.exports = class Monstercat {
@@ -27,10 +27,9 @@ module.exports = class Monstercat {
         this.broadcaster = broadcaster;
 
         /**
-         * The ffmpeg command to transcode before broadcasting.
-         * @type {?FfmpegCommand}
+         * The m3u8 stream from Twitch.
          */
-        this.ffmpeg = null;
+        this.stream = null;
     }
 
     /**
@@ -70,13 +69,11 @@ module.exports = class Monstercat {
 
     _startStream()  {
         twitch.get('monstercat').then(streams => {
-            if(this.ffmpeg) this.ffmpeg.kill();
-            this.ffmpeg = ffmpeg(streams.pop().url)
-                .inputFormat('hls')
-                .format('mp3');
+            if(this.stream) this.stream.end();
+            this.stream = m3u8(streams.pop().url);
 
             const stream = new PassThrough();
-            this.ffmpeg.pipe(stream);
+            this.stream.pipe(stream);
             this.broadcaster.playStream(stream);
         });
     }
