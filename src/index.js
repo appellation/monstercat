@@ -61,8 +61,7 @@ client.setProvider(
 client.registry
     .registerGroups([
     	['info', 'Useful'],
-    	['monstercat', 'Monstercat'],
-        ['owner', 'Owner']
+    	['monstercat', 'Monstercat']
     ])
     .registerDefaults()
     .registerCommandsIn(path.join(__dirname, 'commands'));
