@@ -1,0 +1,37 @@
+{
+  "name": "monstercat",
+  "version": "1.0.0",
+  "description": "Monstercat bot.",
+  "main": "dist/index.js",
+  "dependencies": {
+    "discord-handles": "^7.3.3",
+    "discord.js": "^11.2.1",
+    "dotenv": "^4.0.0",
+    "m3u8stream": "^0.2.1",
+    "twitch-get-stream": "^0.4.0"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^4.0.1",
+    "@types/node": "^8.0.46",
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^2.6.1",
+    "gulp-typescript": "^3.2.2",
+    "typescript": "^2.5.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node dist/index.js",
+    "dev": "env-cmd .env node --trace-warnings dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/appellation/monstercat.git"
+  },
+  "author": "Will Nelson <nelson.will@live.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/appellation/monstercat/issues"
+  },
+  "homepage": "https://github.com/appellation/monstercat#readme"
+}
