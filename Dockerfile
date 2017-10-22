@@ -11,7 +11,7 @@ RUN apk add --update \
 COPY . .
 
 RUN npm install \
-    && gulp \
+    && npm i -g gulp && gulp \
     && apk del .build-deps
 
 CMD [ "node", "dist/index.js" ]
