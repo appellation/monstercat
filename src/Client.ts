@@ -1,7 +1,6 @@
 import * as path from 'path';
 
 import { config } from 'dotenv';
-import m3u8 = require('m3u8stream');
 import twitch = require('twitch-get-stream');
 import { Client } from 'discord.js';
 import { Client as Handles } from 'discord-handles';
@@ -27,18 +26,25 @@ module.exports = new class extends Client {
   }
 
   public async init() {
+    await this.startStream();
+    console.log('ready');
+  }
+
+  public async startStream() {
     const clientID = process.env.TWITCH_CLIENT_ID;
     if (!clientID) throw new Error('no twitch client ID provided');
 
     const streams = await twitch(clientID).get('monstercat');
     const stream = streams.pop();
-    if (!stream) return;
+    if (!stream) {
+      setTimeout(() => this.startStream(), 10000);
+      return;
+    }
 
-    const broadcast = this.createVoiceBroadcast();
-    broadcast.on('error', console.log);
-    broadcast.on('warn', console.log);
-    broadcast.on('end', () => console.log('ended broadcast'));
-    broadcast.playStream(m3u8(stream.url));
-    console.log('ready');
+    const broadcast = this.broadcasts.length ? this.broadcasts[0] : this.createVoiceBroadcast();
+    broadcast
+      .once('error', () => this.startStream())
+      .once('end', () => this.startStream());
+    broadcast.playArbitraryInput(stream.url);
   }
 }
