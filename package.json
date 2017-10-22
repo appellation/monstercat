@@ -22,7 +22,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/index.js",
-    "dev": "env-cmd .env node --trace-warnings dist/index.js"
+    "dev": "gulp && env-cmd .env node --trace-warnings dist/index.js"
   },
   "repository": {
     "type": "git",
