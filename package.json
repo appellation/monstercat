@@ -33,5 +33,10 @@
   "bugs": {
     "url": "https://github.com/appellation/monstercat/issues"
   },
-  "homepage": "https://github.com/appellation/monstercat#readme"
+  "homepage": "https://github.com/appellation/monstercat#readme",
+  "optionalDependencies": {
+    "bufferutil": "^3.0.2",
+    "erlpack": "github:hammerandchisel/erlpack",
+    "sodium": "^2.0.1"
+  }
 }
