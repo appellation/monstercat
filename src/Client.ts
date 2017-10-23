@@ -36,8 +36,6 @@ module.exports = new class extends Client {
       if (Array.isArray(message)) message = Buffer.concat(message);
       if (message instanceof Buffer) message = message.toString('utf8');
 
-      console.log(message);
-
       if (message.startsWith('PING :tmi.twitch.tv')) {
         connection.send('PONG :tmi.twitch.tv');
         return;
@@ -49,7 +47,6 @@ module.exports = new class extends Client {
       const [, prefix, content] = match;
       if (prefix === 'monstercat!monstercat@monstercat.tmi.twitch.tv PRIVMSG #monstercat') {
         const status = content.match(/^Now Playing: (.+) by (.+)/);
-        console.log(status);
         if (!status) return;
 
         const game = `${status[2].replace(/ - (Listen now: \S+ Tweet it: \S+|Listen on Spotify: \S+)$/, '')} - ${status[1]}`;
