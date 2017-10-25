@@ -4,7 +4,7 @@ import { Buffer } from 'buffer';
 import { config } from 'dotenv';
 import twitch = require('twitch-get-stream');
 import Websocket = require('ws');
-import { Client } from 'discord.js';
+import { Client, VoiceBroadcast } from 'discord.js';
 import { Client as Handles } from 'discord-handles';
 
 config({ path: '../.env' });
@@ -75,10 +75,15 @@ module.exports = new class extends Client {
       return;
     }
 
-    const broadcast = this.broadcasts.length ? this.broadcasts[0] : this.createVoiceBroadcast();
-    broadcast
-      .once('error', () => this.startStream())
-      .once('end', () => this.startStream());
+    let broadcast: VoiceBroadcast;
+    if (this.broadcasts.length) {
+      broadcast = this.broadcasts[0];
+    } else {
+      broadcast = this.createVoiceBroadcast();
+      broadcast
+        .once('error', () => this.startStream())
+        .once('end', () => this.startStream());
+    }
     broadcast.playArbitraryInput(stream.url);
   }
 }
