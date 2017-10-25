@@ -59,6 +59,8 @@ module.exports = new class extends Client {
       connection.send('JOIN #monstercat');
     });
 
+    this.user.setGame('Monstercat', 'https://twitch.tv/monstercat');
+
     console.log('ready');
   }
 

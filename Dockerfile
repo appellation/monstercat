@@ -14,4 +14,4 @@ RUN npm install \
     && npm i -g gulp && gulp \
     && apk del .build-deps
 
-CMD [ "node", "dist/index.js" ]
+CMD [ "node", "--trace-warnings", "dist/index.js" ]
