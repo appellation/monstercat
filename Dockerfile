@@ -1,7 +1,7 @@
 FROM alpine:3.6
 
 WORKDIR /usr/src/monstercat
-COPY package.json gulpfile.js ./
+COPY package.json ./
 
 RUN apk add --update \
 	&& apk add --no-cache --virtual .deps nodejs-current nodejs-npm curl \
@@ -9,9 +9,11 @@ RUN apk add --update \
 	&& apk add --no-cache --virtual .npm-deps opus ffmpeg
 
 RUN npm install \
-	&& npm i -g gulp && gulp \
+	&& npm i -g gulp \
 	&& apk del .build-deps
 
 COPY . .
+
+RUN gulp
 
 CMD [ "node", "--trace-warnings", "dist/index.js" ]
