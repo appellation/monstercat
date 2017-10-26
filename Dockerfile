@@ -1,7 +1,7 @@
 FROM alpine:3.6
 
 WORKDIR /usr/src/monstercat
-COPY package.json ./
+COPY package.json gulpfile.js ./
 
 RUN apk add --update \
 	&& apk add --no-cache --virtual .deps nodejs-current nodejs-npm curl \
