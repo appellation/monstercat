@@ -50,7 +50,13 @@ module.exports = new class extends Client {
         if (!status) return;
 
         const game = `${status[2].replace(/ - (Listen now: \S+ Tweet it: \S+|Listen on Spotify: \S+)$/, '')} - ${status[1]}`;
-        this.user.setGame(game, 'https://twitch.tv/monstercat');
+        this.user.setPresence({
+          activity: {
+            type: 'STREAMING',
+            name: game,
+            url: 'https://twitch.tv/monstercat'
+          }
+        });
       }
     });
     connection.once('open', () => {
@@ -59,7 +65,13 @@ module.exports = new class extends Client {
       connection.send('JOIN #monstercat');
     });
 
-    this.user.setGame('Monstercat', 'https://twitch.tv/monstercat');
+    this.user.setPresence({
+      activity: {
+        type: 'STREAMING',
+        name: 'Monstercat',
+        url: 'https://twitch.tv/monstercat'
+      }
+    });
 
     console.log('ready');
   }

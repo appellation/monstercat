@@ -4,10 +4,10 @@
   "description": "Monstercat bot.",
   "main": "dist/index.js",
   "dependencies": {
-    "discord-handles": "^7.3.3",
-    "discord.js": "^11.2.1",
+    "axios": "^0.17.0",
+    "discord-handles": "^7.3.4",
+    "discord.js": "github:appellation/discord.js#arbitrary-input",
     "dotenv": "^4.0.0",
-    "node-opus": "^0.2.7",
     "twitch-get-stream": "^0.4.0",
     "ws": "^3.2.0"
   },
@@ -39,6 +39,7 @@
   "optionalDependencies": {
     "bufferutil": "^3.0.2",
     "erlpack": "github:hammerandchisel/erlpack",
+    "node-opus": "^0.2.7",
     "sodium": "^2.0.1"
   }
 }
