@@ -1,10 +1,9 @@
-FROM alpine:3.6
+FROM node:8-alpine
 
 WORKDIR /usr/src/monstercat
 COPY package.json ./
 
 RUN apk add --update \
-	&& apk add --no-cache --virtual .deps nodejs-current nodejs-npm curl \
 	&& apk add --no-cache --virtual .build-deps git build-base g++ python \
 	&& apk add --no-cache --virtual .npm-deps opus ffmpeg
 
