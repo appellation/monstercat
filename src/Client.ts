@@ -20,6 +20,8 @@ module.exports = new class extends Client {
       directory: path.resolve(__dirname, 'commands'),
     });
 
+    this.startStream = this.startStream.bind(this);
+
     this.once('ready', this.init.bind(this));
 
     const token = process.env.DISCORD_TOKEN;
@@ -90,12 +92,16 @@ module.exports = new class extends Client {
     let broadcast: VoiceBroadcast;
     if (this.broadcasts.length) {
       broadcast = this.broadcasts[0];
+      broadcast
+        .removeListener('error', this.startStream)
+        .removeListener('end', this.startStream);
     } else {
       broadcast = this.createVoiceBroadcast();
-      broadcast
-        .once('error', () => this.startStream())
-        .once('end', () => this.startStream());
     }
+
+    broadcast
+      .once('error', this.startStream)
+      .once('end', this.startStream);
     broadcast.playArbitraryInput(stream.url);
   }
 }
