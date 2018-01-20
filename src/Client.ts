@@ -94,14 +94,14 @@ module.exports = new class extends Client {
       broadcast = this.broadcasts[0];
       broadcast
         .removeListener('error', this.startStream)
-        .removeListener('end', this.startStream);
+        .removeListener('finish', this.startStream);
     } else {
       broadcast = this.createVoiceBroadcast();
     }
 
     broadcast
       .once('error', this.startStream)
-      .once('end', this.startStream);
+      .once('finish', this.startStream);
     broadcast.play(stream.url, { type: 'unknown' });
   }
 }
