@@ -10,7 +10,7 @@ module.exports = class extends Command {
   public async exec() {
     let vc = this.guild.voiceConnection || await this.member.voiceChannel.join();
 
-    const dispatcher = vc.playBroadcast(this.client.broadcasts[0]);
+    const dispatcher = vc.play(this.client.broadcasts[0]);
     dispatcher.setVolumeLogarithmic(0.5);
     await this.response.success(`now streaming to \`🔊 ${vc.channel.name}\``);
   }

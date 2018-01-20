@@ -102,6 +102,6 @@ module.exports = new class extends Client {
     broadcast
       .once('error', this.startStream)
       .once('end', this.startStream);
-    broadcast.playArbitraryInput(stream.url);
+    broadcast.play(stream.url, { type: 'unknown' });
   }
 }
