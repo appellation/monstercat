@@ -1,16 +1,17 @@
 import * as path from 'path';
 import { Buffer } from 'buffer';
 
-import { config } from 'dotenv';
+import axios from 'axios';
+import { Client as Lavalink } from 'lavalink';
 import twitch = require('twitch-get-stream');
 import Websocket = require('ws');
 import { Client, VoiceBroadcast } from 'discord.js';
 import { Client as Handles } from 'discord-handles';
 
-config({ path: '../.env' });
-
-module.exports = new class extends Client {
+module.exports = new class MonstercatClient extends Client {
   public readonly handles: Handles;
+  public lavalink?: Lavalink;
+  public track?: string;
 
   constructor() {
     super();
@@ -20,7 +21,7 @@ module.exports = new class extends Client {
       directory: path.resolve(__dirname, 'commands'),
     });
 
-    this.startStream = this.startStream.bind(this);
+    this.handles.on('commandError', console.error);
 
     this.once('ready', this.init.bind(this));
 
@@ -30,7 +31,53 @@ module.exports = new class extends Client {
   }
 
   public async init() {
-    this.startStream();
+    if (!process.env.DISCORD_CLIENT_ID) throw new Error('no discord client ID available');
+    this.lavalink = new Lavalink({
+      password: 'youshallnotpass',
+      shards: this.shard.count,
+      userID: this.user.id,
+    });
+
+    this.lavalink.on('event', (pk) =>{
+      if (!this.lavalink || !this.track) return;
+      this.lavalink.players.get(pk.guildId).play(this.track);
+    });
+
+    this.on('raw', (pk: any) => {
+      if (!this.lavalink) return;
+
+      switch (pk.t) {
+        case 'VOICE_STATE_UPDATE':
+          this.lavalink.voiceStateUpdate(pk.d);
+          break;
+        case 'VOICE_SERVER_UPDATE':
+          this.lavalink.voiceServerUpdate(pk.d);
+          break;
+      }
+    });
+
+    let connected = false;
+    while (!connected) {
+      try {
+        await this.lavalink.connect('ws://lavalink:8080');
+        connected = true;
+      } catch {
+        await new Promise(r => setTimeout(r, 1e3));
+      }
+    }
+
+    while (!this.track) {
+      try {
+        this.track = (await axios.get('http://lavalink:8081/loadtracks', {
+          params: { identifier: 'https://www.twitch.tv/monstercat' },
+          headers: { Authorization: this.lavalink.password },
+        })).data[0].track;
+      } catch {
+        await new Promise(r => setTimeout(r, 1e3));
+      }
+    }
+
+    console.log(this.track);
 
     const connection = new Websocket('wss://irc-ws.chat.twitch.tv', 'irc');
     connection.on('message', (message: Websocket.Data) => {
@@ -76,32 +123,5 @@ module.exports = new class extends Client {
     });
 
     console.log('ready');
-  }
-
-  public async startStream() {
-    const clientID = process.env.TWITCH_CLIENT_ID;
-    if (!clientID) throw new Error('no twitch client ID provided');
-
-    const streams = await twitch(clientID).get('monstercat');
-    const stream = streams.pop();
-    if (!stream) {
-      setTimeout(() => this.startStream(), 10000);
-      return;
-    }
-
-    let broadcast: VoiceBroadcast;
-    if (this.broadcasts.length) {
-      broadcast = this.broadcasts[0];
-      broadcast
-        .removeListener('error', this.startStream)
-        .removeListener('finish', this.startStream);
-    } else {
-      broadcast = this.createVoiceBroadcast();
-    }
-
-    broadcast
-      .once('error', this.startStream)
-      .once('finish', this.startStream);
-    broadcast.play(stream.url, { type: 'unknown' });
   }
 }

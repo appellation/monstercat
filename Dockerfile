@@ -1,7 +1,7 @@
 FROM node:8-alpine
 
 WORKDIR /usr/src/monstercat
-COPY package.json ./
+COPY package.json package-lock.json ./
 
 RUN apk add --update \
 	&& apk add --no-cache --virtual .build-deps git build-base g++ python \
