@@ -7,16 +7,12 @@ module.exports = class extends Command {
   }
 
   public async exec() {
-    (this.client as any).lavalink.players.get(this.guild.id).stop();
-    (this.client as any).ws.send({
-      op: 4,
-      d: {
-        channel_id: null,
-        guild_id: this.guild.id,
-        self_mute: false,
-        self_deaf: true,
-      },
-    });
+    if (this.client.lavalink) {
+      const player = this.client.lavalink.players.get(this.guild.id);
+      player.stop();
+      player.join('', {});
+    }
+
     return this.response.success('stopped streaming');
   }
 }

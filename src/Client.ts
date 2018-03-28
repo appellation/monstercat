@@ -8,6 +8,14 @@ import Websocket = require('ws');
 import { Client, VoiceBroadcast } from 'discord.js';
 import { Client as Handles } from 'discord-handles';
 
+declare module 'discord.js' {
+  interface Client {
+    handles: Handles;
+    lavalink?: Lavalink;
+    track?: string;
+  }
+}
+
 module.exports = new class MonstercatClient extends Client {
   public readonly handles: Handles;
   public lavalink?: Lavalink;
@@ -32,16 +40,20 @@ module.exports = new class MonstercatClient extends Client {
 
   public async init() {
     if (!process.env.DISCORD_CLIENT_ID) throw new Error('no discord client ID available');
-    this.lavalink = new Lavalink({
-      password: 'youshallnotpass',
-      shards: this.shard.count,
-      userID: this.user.id,
-    });
+    const self = this;
+    this.lavalink = new class extends Lavalink {
+      constructor() {
+        super({
+          password: 'youshallnotpass',
+          userID: self.user.id,
+        });
+      }
 
-    this.lavalink.on('event', (pk) =>{
-      if (!this.lavalink || !this.track) return;
-      this.lavalink.players.get(pk.guildId).play(this.track);
-    });
+      send(guild: string, pk: any) {
+        if (self.guilds.has(guild)) return (self as any).ws.send(pk);
+        return Promise.resolve();
+      }
+    }
 
     this.on('raw', (pk: any) => {
       if (!this.lavalink) return;
@@ -108,6 +120,7 @@ module.exports = new class MonstercatClient extends Client {
         });
       }
     });
+
     connection.once('open', () => {
       connection.send(`PASS ${process.env.TWITCH_OAUTH_PASSWORD}`);
       connection.send(`NICK ${process.env.TWITCH_USERNAME}`);

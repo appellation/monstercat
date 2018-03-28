@@ -9,8 +9,12 @@ module.exports = class extends Command {
   }
 
   public async exec() {
-    await (this.client as any).ws.send((this.client as any).lavalink.join(this.message.guild.id, this.member.voiceChannelID, {}));
-    await (this.client as any).lavalink.players.get(this.guild.id).play((this.client as any).track);
-    await this.response.success(`now streaming to \`🔊 ${this.member.voiceChannel.name}\``);
+    if (this.client.lavalink && this.client.track) {
+      const player = this.client.lavalink.players.get(this.guild.id);
+      player.join(this.member.voiceChannelID, {});
+      player.play(this.client.track);
+    }
+
+    return this.response.success(`now streaming to \`🔊 ${this.member.voiceChannel.name}\``);
   }
 }
