@@ -12,7 +12,6 @@ export default class TwitchMessageListener extends Listener {
   exec(message: Message) {
     if (message.user.username !== 'monstercat') return;
 
-    console.log(message.content);
     const status = message.content.match(/^Now Playing: (.+) by (.+)/);
     if (!status) return;
 
