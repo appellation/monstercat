@@ -1,7 +1,14 @@
-import { Command } from 'discord-handles';
+import { Command } from 'discord-akairo';
+import { Message } from 'discord.js';
 
-module.exports = class extends Command {
-  public async exec() {
-    return this.response.success('<https://discordapp.com/oauth2/authorize/?permissions=0&scope=bot&client_id=251253454826110977>');
+module.exports = class Help extends Command {
+  constructor() {
+    super('invite', {
+      aliases: ['invite'],
+    });
+  }
+
+  public async exec(message: Message) {
+    return message.reply('<https://discordapp.com/oauth2/authorize/?permissions=0&scope=bot&client_id=251253454826110977>');
   }
 }

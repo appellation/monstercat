@@ -1,140 +1,93 @@
-import * as path from 'path';
-import { Buffer } from 'buffer';
+import { Node } from 'lavalink';
+import { Client as Javelin } from 'javelin';
+import { AkairoClient, CommandHandler, ListenerHandler } from 'discord-akairo';
+import Keyv = require('keyv');
+import path = require('path');
+import Streams from './Streams';
 
-import axios from 'axios';
-import { Client as Lavalink } from 'lavalink';
-import twitch = require('twitch-get-stream');
-import Websocket = require('ws');
-import { Client, VoiceBroadcast } from 'discord.js';
-import { Client as Handles } from 'discord-handles';
+declare module 'discord-akairo' {
+  interface AkairoClient {
+    commandHandler: CommandHandler;
+    listenerHandler: ListenerHandler;
 
-declare module 'discord.js' {
-  interface Client {
-    handles: Handles;
-    lavalink?: Lavalink;
-    track?: string;
+    lavalink: Node;
+    twitch: Javelin;
+    stations: Keyv;
+    streams: Streams;
+
+    uncaged?: string;
+    instinct?: string;
   }
 }
 
-module.exports = new class MonstercatClient extends Client {
-  public readonly handles: Handles;
-  public lavalink?: Lavalink;
-  public track?: string;
+export default class MonstercatClient extends AkairoClient {
+  public commandHandler: CommandHandler;
+  public listenerHandler: ListenerHandler;
+  public lavalink: Node;
+  public twitch: Javelin;
+  public stations: Keyv;
+  public streams: Streams;
 
-  constructor() {
-    super();
-
-    this.handles = new Handles(this, {
-      prefixes: new Set(['mc!']),
-      directory: path.resolve(__dirname, 'commands'),
+  constructor(options: {
+    ownerID: string,
+    clientID: string,
+    lavalink: { password: string, rest: string, ws: string },
+    twitch: { oauth: string, username: string },
+  }) {
+    super({
+      ownerID: options.ownerID,
+    }, {
+      disableEveryone: true,
+      disabledEvents: [
+        'VOICE_SERVER_UPDATE', // stop d.js from initiating voice connections
+        'TYPING_START',
+      ],
     });
 
-    this.handles.on('commandError', console.error);
+    this.commandHandler = new CommandHandler(this, {
+      directory: path.join('dist', 'commands'),
+      prefix: ['mc!', 'mc.'],
+      handleEdits: true,
+      commandUtil: true,
+    });
 
-    this.once('ready', this.init.bind(this));
+    this.listenerHandler = new ListenerHandler(this, {
+      directory: path.join('dist', 'listeners'),
+    });
+    this.commandHandler.useListenerHandler(this.listenerHandler);
 
-    const token = process.env.DISCORD_TOKEN;
-    if (!token) throw new Error('no discord token');
-    this.login(token);
+    this.lavalink = new Node({
+      password: options.lavalink.password,
+      userID: options.clientID,
+      send: (guild: string, pk: any) => {
+        if (this.guilds.has(guild)) return (this as any).ws.send(pk);
+        return Promise.resolve();
+      },
+      hosts: options.lavalink,
+    });
+
+    this.twitch = new Javelin({
+      oauth: options.twitch.oauth,
+      username: options.twitch.username,
+      channels: ['#monstercat'],
+    });
+
+    this.stations = new Keyv('sqlite://data/db.sqlite', { namespace: 'stations' });
+    this.streams = new Streams(this.lavalink);
+
+    this.listenerHandler.setEmitters({
+      lavalink: this.lavalink,
+      twitch: this.twitch,
+      stations: this.stations,
+    });
+
+    this.listenerHandler.loadAll();
+    this.commandHandler.loadAll();
   }
 
-  public async init() {
-    if (!process.env.DISCORD_CLIENT_ID) throw new Error('no discord client ID available');
-    const self = this;
-    this.lavalink = new class extends Lavalink {
-      constructor() {
-        super({
-          password: 'youshallnotpass',
-          userID: self.user.id,
-        });
-      }
-
-      send(guild: string, pk: any) {
-        if (self.guilds.has(guild)) return (self as any).ws.send(pk);
-        return Promise.resolve();
-      }
-    }
-
-    this.on('raw', (pk: any) => {
-      if (!this.lavalink) return;
-
-      switch (pk.t) {
-        case 'VOICE_STATE_UPDATE':
-          this.lavalink.voiceStateUpdate(pk.d);
-          break;
-        case 'VOICE_SERVER_UPDATE':
-          this.lavalink.voiceServerUpdate(pk.d);
-          break;
-      }
-    });
-
-    let connected = false;
-    while (!connected) {
-      try {
-        await this.lavalink.connect('ws://lavalink:8080');
-        connected = true;
-      } catch {
-        await new Promise(r => setTimeout(r, 1e3));
-      }
-    }
-
-    while (!this.track) {
-      try {
-        this.track = (await axios.get('http://lavalink:8081/loadtracks', {
-          params: { identifier: 'https://www.twitch.tv/monstercat' },
-          headers: { Authorization: this.lavalink.password },
-        })).data[0].track;
-      } catch {
-        await new Promise(r => setTimeout(r, 1e3));
-      }
-    }
-
-    console.log(this.track);
-
-    const connection = new Websocket('wss://irc-ws.chat.twitch.tv', 'irc');
-    connection.on('message', (message: Websocket.Data) => {
-      if (message instanceof ArrayBuffer) message = Buffer.from(message);
-      if (Array.isArray(message)) message = Buffer.concat(message);
-      if (message instanceof Buffer) message = message.toString('utf8');
-
-      if (message.startsWith('PING :tmi.twitch.tv')) {
-        connection.send('PONG :tmi.twitch.tv');
-        return;
-      }
-
-      const match = message.match(/^:([^:]+) :(.+)/);
-      if (!match) return;
-
-      const [, prefix, content] = match;
-      if (prefix === 'monstercat!monstercat@monstercat.tmi.twitch.tv PRIVMSG #monstercat') {
-        const status = content.match(/^Now Playing: (.+) by (.+)/);
-        if (!status) return;
-
-        const game = `${status[2].replace(/ - (Listen now: \S+ Tweet it: \S+|Listen on Spotify: \S+)$/, '')} - ${status[1]}`;
-        this.user.setPresence({
-          activity: {
-            type: 'STREAMING',
-            name: game,
-            url: 'https://twitch.tv/monstercat'
-          }
-        });
-      }
-    });
-
-    connection.once('open', () => {
-      connection.send(`PASS ${process.env.TWITCH_OAUTH_PASSWORD}`);
-      connection.send(`NICK ${process.env.TWITCH_USERNAME}`);
-      connection.send('JOIN #monstercat');
-    });
-
-    this.user.setPresence({
-      activity: {
-        type: 'STREAMING',
-        name: 'Monstercat',
-        url: 'https://twitch.tv/monstercat'
-      }
-    });
-
-    console.log('ready');
+  public async login(token: string) {
+    const loggedin = await super.login(token);
+    this.twitch.login();
+    return loggedin;
   }
 }

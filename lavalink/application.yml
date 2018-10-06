@@ -8,10 +8,10 @@ lavalink:
       port: 8080
       host: 0.0.0.0
     sources:
-      youtube: false
+      youtube: true
       bandcamp: false
       soundcloud: false
-      twitch: true
+      twitch: false
       vimeo: false
       mixer: false
       http: false

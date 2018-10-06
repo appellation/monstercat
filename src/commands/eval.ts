@@ -1,17 +1,20 @@
 import { inspect } from 'util';
-import { Command, Validator, Argument } from 'discord-handles';
+import { Command } from 'discord-akairo';
+import { Message } from 'discord.js';
 
-module.exports = class extends Command {
-  public async pre() {
-    await new Validator(this)
-      .apply(this.author.id === process.env.OWNER, 'This command is owner-only.');
-
-    await new Argument(this, 'code')
-      .setInfinite()
-      .setPrompt('What would you like to evaluate?');
+module.exports = class EvalCommand extends Command {
+  constructor() {
+    super('eval', {
+      aliases: ['eval'],
+      args: [{
+        id: 'code',
+        type: 'string',
+      }],
+      ownerOnly: true,
+    });
   }
 
-  public async exec() {
-    return this.response.send(inspect(eval(this.args.code), { depth: 1 }), { code: 'js' });
+  public async exec(message: Message, args: any) {
+    return message.reply(inspect(eval(args.code), { depth: 1 }), { code: 'js' });
   }
 }

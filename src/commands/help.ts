@@ -1,7 +1,14 @@
-import { Command } from 'discord-handles';
+import { Command, CommandUtil } from 'discord-akairo';
+import { Message } from 'discord.js';
 
-module.exports = class extends Command {
-  public async exec() {
-    return this.response.success('available commands: **join**, **leave**, **invite**');
+module.exports = class Help extends Command {
+  constructor() {
+    super('help', {
+      aliases: ['help'],
+    });
+  }
+
+  public async exec(message: Message) {
+    return (message.util as CommandUtil).send('available commands: **join**, **leave**, **invite**');
   }
 }

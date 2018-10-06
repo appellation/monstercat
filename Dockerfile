@@ -8,11 +8,9 @@ RUN apk add --update \
 	&& apk add --no-cache --virtual .npm-deps opus ffmpeg
 
 RUN npm install \
-	&& npm i -g gulp \
 	&& apk del .build-deps
 
 COPY . .
 
-RUN gulp
-
-CMD [ "node", "--trace-warnings", "dist/index.js" ]
+RUN npm run prepare
+CMD [ "npm", "start" ]

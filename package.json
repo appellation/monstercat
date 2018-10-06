@@ -3,35 +3,41 @@
   "version": "1.0.0",
   "description": "Monstercat bot.",
   "main": "dist/index.js",
+  "bin": "bin/index.js",
   "dependencies": {
-    "axios": "^0.17.1",
-    "discord-handles": "^7.3.4",
+    "@keyv/sqlite": "^2.0.0",
+    "discord-akairo": "github:1computer1/discord-akairo",
     "discord.js": "github:discordjs/discord.js",
-    "lavalink": "^0.4.0",
-    "twitch-get-stream": "^0.4.0",
-    "ws": "^3.2.0"
+    "javelin": "^0.3.3",
+    "keyv": "^3.1.0",
+    "lavalink": "^2.2.2"
   },
   "devDependencies": {
-    "@types/dotenv": "^4.0.1",
+    "@types/bluebird": "^3.5.24",
+    "@types/keyv": "^3.0.1",
     "@types/node": "^8.0.46",
-    "@types/ws": "^3.2.0",
+    "@types/sequelize": "^4.27.27",
+    "@types/ws": "^6.0.1",
     "del": "^3.0.0",
-    "gulp": "^3.9.1",
-    "gulp-sourcemaps": "^2.6.1",
+    "gulp": "^4.0.0",
+    "gulp-sourcemaps": "^2.6.4",
     "gulp-typescript": "^3.2.2",
-    "typescript": "^2.5.3"
+    "merge2": "^1.2.2",
+    "typescript": "^3.1.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node dist/index.js",
-    "dev": "gulp && env-cmd .env node --trace-warnings dist/index.js"
+    "start": "node bin/index.js",
+    "prepare": "gulp",
+    "dev": "gulp && env-cmd .env node --trace-warnings bin/index.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/appellation/monstercat.git"
   },
-  "author": "Will Nelson <nelson.will@live.com>",
-  "license": "ISC",
+  "author": "Will Nelson <will@pleb.xyz>",
+  "license": "UNLICENSED",
+  "private": true,
   "bugs": {
     "url": "https://github.com/appellation/monstercat/issues"
   },

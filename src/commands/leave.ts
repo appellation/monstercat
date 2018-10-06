@@ -1,18 +1,18 @@
-import { Command, Validator } from 'discord-handles';
+import { Command } from 'discord-akairo';
+import { Message } from 'discord.js';
 
 module.exports = class extends Command {
-  public async pre() {
-    await new Validator(this)
-      .apply(this.member.voiceChannelID === this.guild.me.voiceChannelID && Boolean(this.guild.me.voiceChannelID), 'You\'re not in my voice channel. Please join it before using this command.');
+  constructor() {
+    super('leave', {
+      aliases: ['leave'],
+      channel: 'guild',
+    });
   }
 
-  public async exec() {
-    if (this.client.lavalink) {
-      const player = this.client.lavalink.players.get(this.guild.id);
-      player.stop();
-      player.join('', {});
-    }
-
-    return this.response.success('stopped streaming');
+  public async exec(message: Message) {
+    const player = this.client.lavalink.players.get(message.guild.id);
+    player.stop();
+    player.leave();
+    return message.reply('stopped streaming');
   }
 }
