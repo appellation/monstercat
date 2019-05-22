@@ -2,7 +2,7 @@ import { inspect } from 'util';
 import { Command } from 'discord-akairo';
 import { Message } from 'discord.js';
 
-module.exports = class EvalCommand extends Command {
+export default class EvalCommand extends Command {
   constructor() {
     super('eval', {
       aliases: ['eval'],

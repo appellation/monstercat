@@ -10,7 +10,7 @@ module.exports = class extends Command {
   }
 
   public async exec(message: Message) {
-    const player = this.client.lavalink.players.get(message.guild.id);
+    const player = this.client.lavalink.players.get(message.guild!.id);
     player.stop();
     player.leave();
     return message.reply('stopped streaming');

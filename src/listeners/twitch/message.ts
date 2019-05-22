@@ -16,7 +16,7 @@ export default class TwitchMessageListener extends Listener {
     if (!status) return;
 
     const game = `${status[2].replace(/ - (Listen now: \S+ Tweet it: \S+|Listen on Spotify: \S+)$/, '')} - ${status[1]}`;
-    this.client.user.setActivity(game, {
+    this.client.user!.setActivity(game, {
       type: 'STREAMING',
       url: 'https://twitch.tv/monstercat'
     });

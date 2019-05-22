@@ -9,6 +9,6 @@ module.exports = class Help extends Command {
   }
 
   public async exec(message: Message) {
-    return (message.util as CommandUtil).send('available commands: **join**, **leave**, **invite**');
+    return message.util!.send('available commands: **join**, **leave**, **invite**');
   }
 }

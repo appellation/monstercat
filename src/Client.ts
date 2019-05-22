@@ -33,6 +33,7 @@ export default class MonstercatClient extends AkairoClient {
     clientID: string,
     lavalink: { password: string, rest: string, ws: string },
     twitch: { oauth: string, username: string },
+    redis: string,
   }) {
     super({
       ownerID: options.ownerID,
@@ -72,7 +73,7 @@ export default class MonstercatClient extends AkairoClient {
       channels: ['#monstercat'],
     });
 
-    this.stations = new Keyv('sqlite://data/db.sqlite', { namespace: 'stations' });
+    this.stations = new Keyv(options.redis, { namespace: 'stations' });
     this.streams = new Streams(this.lavalink);
 
     this.listenerHandler.setEmitters({

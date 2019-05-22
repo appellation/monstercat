@@ -4,14 +4,11 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "target": "es2017",
-    "lib": [
-      "es2017"
-    ],
-    "declaration": true,
+    "lib": ["es2017"],
+    "declaration": false,
     "sourceMap": true,
-    "removeComments": false
+    "removeComments": true,
+    "outDir": "./dist"
   },
-  "include": [
-    "./src/"
-  ]
+  "include": ["./src/", "./bin/"],
 }

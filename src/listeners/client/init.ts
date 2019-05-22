@@ -10,7 +10,7 @@ export default class ClientReadyListener extends Listener {
   }
 
   exec() {
-    this.client.user.setActivity('Monstercat', {
+    this.client.user!.setActivity('Monstercat', {
       type: 'STREAMING',
       url: 'https://twitch.tv/monstercat'
     });

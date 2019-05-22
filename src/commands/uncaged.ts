@@ -11,7 +11,7 @@ export default class InstinctCommand extends Command {
   }
 
   async exec(message: Message) {
-    await this.client.stations.set(message.guild.id, StreamType.UNCAGED);
+    await this.client.stations.set(message.guild!.id, StreamType.UNCAGED);
 
     const join = this.handler.findCommand('join');
     return this.client.commandHandler.runCommand(message, join, { station: StreamType.UNCAGED });

@@ -11,10 +11,9 @@ export default class InstinctCommand extends Command {
   }
 
   async exec(message: Message) {
-    await this.client.stations.set(message.guild.id, StreamType.INSTINCT);
+    await this.client.stations.set(message.guild!.id, StreamType.INSTINCT);
 
     const join = this.handler.modules.get('join');
-    if (!join) return;
-    return this.client.commandHandler.runCommand(message, join, { station: StreamType.INSTINCT });
+    return this.client.commandHandler.runCommand(message, join!, { station: StreamType.INSTINCT });
   }
 }
