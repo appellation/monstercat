@@ -14,9 +14,6 @@ declare module 'discord-akairo' {
     sources: Sources;
     broadcasts: Broadcasts;
     stations: Keyv;
-
-    uncaged?: string;
-    instinct?: string;
   }
 }
 
