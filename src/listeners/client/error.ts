@@ -1,15 +1,16 @@
-import { Listener } from 'discord-akairo';
+import { Listener, ListenerHandler } from 'discord-akairo';
 
 export default class ClientReadyListener extends Listener {
-  constructor() {
+  constructor(handler: ListenerHandler) {
     super('client-error', {
-      type: 'on',
       emitter: 'client',
       event: 'error',
     });
+
+    this.client = handler.client;
   }
 
   exec(error: any) {
-    console.error(error);
+    this.client.logger.error(error);
   }
 }

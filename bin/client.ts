@@ -1,3 +1,4 @@
+import { Signale } from 'signale';
 import Client from '../src/Client';
 
 if (!process.env.TWITCH_OAUTH_PASSWORD) throw new Error('Twitch OAuth password not specified');
@@ -13,6 +14,9 @@ const client = new Client({
     username: process.env.TWITCH_USERNAME,
   },
   redis: process.env.REDIS_URL || 'redis://redis:6379',
+  logger: new Signale({
+    logLevel: process.env.LOG_LEVEL || 'warn',
+  } as any),
 });
-console.log(`spawned shard ${client.shard!.ids}`);
-client.login(process.env.DISCORD_TOKEN).then(() => console.log(`shard ${client.shard!.ids} ready`));
+client.logger.await(`shard ${client.shard!.ids}`);
+client.login(process.env.DISCORD_TOKEN).then(() => client.logger.success(`shard ${client.shard!.ids} ready`));

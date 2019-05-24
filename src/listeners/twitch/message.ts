@@ -16,6 +16,7 @@ export default class TwitchMessageListener extends Listener {
     if (!status) return;
 
     const game = `${status[2]} - ${status[1]}`;
+    this.client.logger.debug('setting game to %s', game);
     this.client.user!.setActivity(game, {
       type: 'STREAMING',
       url: 'https://twitch.tv/monstercat'
