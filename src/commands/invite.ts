@@ -9,6 +9,6 @@ module.exports = class Help extends Command {
   }
 
   public async exec(message: Message) {
-    return message.reply('<https://discordapp.com/oauth2/authorize/?permissions=0&scope=bot&client_id=251253454826110977>');
+    return message.util!.reply('<https://discordapp.com/oauth2/authorize/?permissions=0&scope=bot&client_id=251253454826110977>');
   }
 }

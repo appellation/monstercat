@@ -1,8 +1,9 @@
 import Client from '../src/Client';
 
-if (!process.env.TWITCH_OAUTH_PASSWORD) throw new Error('Twith OAuth password not specified');
+if (!process.env.TWITCH_OAUTH_PASSWORD) throw new Error('Twitch OAuth password not specified');
 if (!process.env.TWITCH_USERNAME) throw new Error('Twitch username not specified');
 if (!process.env.DISCORD_TOKEN) throw new Error('No Discord token specified');
+if (!process.env.TWITCH_CLIENT_ID) throw new Error('Twitch client ID not specified');
 
 const client = new Client({
   ownerID: process.env.OWNER || '116690352584392704',
@@ -10,11 +11,6 @@ const client = new Client({
   twitch: {
     oauth: process.env.TWITCH_OAUTH_PASSWORD,
     username: process.env.TWITCH_USERNAME,
-  },
-  lavalink: {
-    password: 'youshallnotpass',
-    rest: process.env.LAVALINK_REST || 'http://lavalink:8081',
-    ws: process.env.LAVALINK_WS || 'ws://lavalink:8080',
   },
   redis: process.env.REDIS_URL || 'redis://redis:6379',
 });

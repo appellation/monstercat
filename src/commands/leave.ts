@@ -1,5 +1,5 @@
 import { Command } from 'discord-akairo';
-import { Message } from 'discord.js';
+import { Message, VoiceConnection } from 'discord.js';
 
 module.exports = class extends Command {
   constructor() {
@@ -10,9 +10,15 @@ module.exports = class extends Command {
   }
 
   public async exec(message: Message) {
-    const player = this.client.lavalink.players.get(message.guild!.id);
-    player.stop();
-    player.leave();
-    return message.reply('stopped streaming');
+    if (!message.guild!.me) return;
+
+    const conn = (message.guild!.me.voice as any).connection as VoiceConnection | null;
+    if (!conn) return message.util!.reply('I\'m not currently connected to a voice channel.');
+
+    const dispatcher = conn.dispatcher;
+    if (dispatcher) dispatcher.end();
+
+    conn.channel.leave();
+    return message.util!.reply('stopped streaming');
   }
 }

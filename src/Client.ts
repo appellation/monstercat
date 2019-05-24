@@ -1,19 +1,19 @@
-import { Node } from 'lavalink';
 import { Client as Javelin } from 'javelin';
 import { AkairoClient, CommandHandler, ListenerHandler } from 'discord-akairo';
 import Keyv = require('keyv');
 import path = require('path');
-import Streams from './Streams';
+import Sources from './audio/Sources';
+import Broadcasts from './audio/Broadcasts';
 
 declare module 'discord-akairo' {
   interface AkairoClient {
     commandHandler: CommandHandler;
     listenerHandler: ListenerHandler;
 
-    lavalink: Node;
     twitch: Javelin;
+    sources: Sources;
+    broadcasts: Broadcasts;
     stations: Keyv;
-    streams: Streams;
 
     uncaged?: string;
     instinct?: string;
@@ -23,15 +23,14 @@ declare module 'discord-akairo' {
 export default class MonstercatClient extends AkairoClient {
   public commandHandler: CommandHandler;
   public listenerHandler: ListenerHandler;
-  public lavalink: Node;
   public twitch: Javelin;
+  public sources: Sources;
+  public broadcasts: Broadcasts;
   public stations: Keyv;
-  public streams: Streams;
 
   constructor(options: {
     ownerID: string,
     clientID: string,
-    lavalink: { password: string, rest: string, ws: string },
     twitch: { oauth: string, username: string },
     redis: string,
   }) {
@@ -40,32 +39,21 @@ export default class MonstercatClient extends AkairoClient {
     }, {
       disableEveryone: true,
       disabledEvents: [
-        'VOICE_SERVER_UPDATE', // stop d.js from initiating voice connections
         'TYPING_START',
       ],
     });
 
     this.commandHandler = new CommandHandler(this, {
-      directory: path.join('dist', 'commands'),
+      directory: path.resolve(__dirname, 'commands'),
       prefix: ['mc!', 'mc.'],
       handleEdits: true,
       commandUtil: true,
     });
 
     this.listenerHandler = new ListenerHandler(this, {
-      directory: path.join('dist', 'listeners'),
+      directory: path.resolve(__dirname, 'listeners'),
     });
     this.commandHandler.useListenerHandler(this.listenerHandler);
-
-    this.lavalink = new Node({
-      password: options.lavalink.password,
-      userID: options.clientID,
-      send: (guild: string, pk: any) => {
-        if (this.guilds.has(guild)) return (this as any).ws.send(pk);
-        return Promise.resolve();
-      },
-      hosts: options.lavalink,
-    });
 
     this.twitch = new Javelin({
       oauth: options.twitch.oauth,
@@ -73,11 +61,11 @@ export default class MonstercatClient extends AkairoClient {
       channels: ['#monstercat'],
     });
 
+    this.sources = new Sources();
+    this.broadcasts = new Broadcasts(this.voice!, this.sources);
     this.stations = new Keyv(options.redis, { namespace: 'stations' });
-    this.streams = new Streams(this.lavalink);
 
     this.listenerHandler.setEmitters({
-      lavalink: this.lavalink,
       twitch: this.twitch,
       stations: this.stations,
     });

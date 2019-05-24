@@ -9,12 +9,13 @@ export default class EvalCommand extends Command {
       args: [{
         id: 'code',
         type: 'string',
+        match: 'rest',
       }],
       ownerOnly: true,
     });
   }
 
   public async exec(message: Message, args: any) {
-    return message.reply(inspect(eval(args.code), { depth: 1 }), { code: 'js' });
+    return message.util!.reply(inspect(eval(args.code), { depth: 1 }), { code: 'js' });
   }
 }

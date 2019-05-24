@@ -5,5 +5,5 @@ services:
     env_file: .env
     volumes:
       - ./data:/usr/src/monstercat/data
-  lavalink:
-    build: ./lavalink
+  redis:
+    image: redis:alpine

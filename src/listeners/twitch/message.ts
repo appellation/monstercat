@@ -12,10 +12,10 @@ export default class TwitchMessageListener extends Listener {
   exec(message: Message) {
     if (message.user.username !== 'monstercat') return;
 
-    const status = message.content.match(/^Now Playing: (.+) by (.+)/);
+    const status = message.content.match(/^Now playing (.+) by (.+)\s+monstercat\.com.*$/i);
     if (!status) return;
 
-    const game = `${status[2].replace(/ - (Listen now: \S+ Tweet it: \S+|Listen on Spotify: \S+)$/, '')} - ${status[1]}`;
+    const game = `${status[2]} - ${status[1]}`;
     this.client.user!.setActivity(game, {
       type: 'STREAMING',
       url: 'https://twitch.tv/monstercat'
