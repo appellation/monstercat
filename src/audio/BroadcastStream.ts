@@ -23,6 +23,10 @@ export default class BroadcastStream {
 			this.start();
 		});
 
+		dispatcher.on('debug', (info) => {
+			this.logger.debug('[debug]', info);
+		});
+
 		this.logger.info('started track %s', this.track.url);
 		return dispatcher;
 	}
@@ -32,6 +36,10 @@ export default class BroadcastStream {
 		dispatcher.on('error', (error) => {
 			this.logger.warn(error);
 			// do nothing: handled by broadcast error handler
+		});
+
+		dispatcher.on('debug', (info) => {
+			this.logger.debug('[debug]', info);
 		});
 
 		this.logger.debug('playing on %s', vc.channel.id);
