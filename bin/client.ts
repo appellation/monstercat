@@ -18,5 +18,5 @@ const client = new Client({
     logLevel: process.env.LOG_LEVEL || 'warn',
   } as any),
 });
-client.logger.await(`shard ${client.shard!.ids}`);
-client.login(process.env.DISCORD_TOKEN).then(() => client.logger.success(`shard ${client.shard!.ids} ready`));
+client.logger.await(`shard ${client.shard && client.shard.ids}`);
+client.login(process.env.DISCORD_TOKEN).then(() => client.logger.success(`shard ${client.shard && client.shard.ids} ready`));
