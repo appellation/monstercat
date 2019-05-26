@@ -13,7 +13,7 @@ export default class BroadcastStream {
 			this.logger.warn(error);
 			this.start();
 		},
-		close: () => {
+		finish: () => {
 			this.logger.info('closed');
 			this.start();
 		},
@@ -38,15 +38,6 @@ export default class BroadcastStream {
 
 	public to(vc: VoiceConnection): StreamDispatcher {
 		const dispatcher = vc.play(this.broadcast);
-		dispatcher.on('error', (error) => {
-			this.logger.warn(error);
-			// do nothing: handled by broadcast error handler
-		});
-
-		dispatcher.on('debug', (info) => {
-			this.logger.debug('[debug]', info);
-		});
-
 		this.logger.debug('playing on %s', vc.channel.id);
 		return dispatcher;
 	}
