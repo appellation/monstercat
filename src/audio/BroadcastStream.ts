@@ -1,12 +1,12 @@
 import { BroadcastDispatcher, StreamDispatcher, VoiceBroadcast, VoiceConnection } from 'discord.js';
-import { Readable } from 'stream';
 import { Signale } from 'signale';
 import Track from './Track';
+import { Streamable } from './sources/AudioSource';
 
 export default class BroadcastStream {
 	public readonly logger: Signale = new Signale({ scope: 'broadcast stream' });
 
-	protected _stream?: Readable;
+	protected _stream?: Streamable;
 	protected _dispatcher?: BroadcastDispatcher;
 	protected _listeners = {
 		error: (error: Error) => {
@@ -27,8 +27,10 @@ export default class BroadcastStream {
 	}
 
 	public async start(): Promise<void> {
-		if (!this._stream) this._stream = await this.track.stream();
 		if (this._dispatcher) this._removeListeners();
+
+		if (this._stream && typeof this._stream === 'object') this._stream.destroy();
+		this._stream = await this.track.stream();
 
 		this._dispatcher = this.broadcast.play(this._stream);
 		this._registerListeners();

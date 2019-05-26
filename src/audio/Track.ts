@@ -1,6 +1,5 @@
 import { URL } from "url";
-import AudioSource from "./sources/AudioSource";
-import { Readable } from "stream";
+import AudioSource, { Streamable } from "./sources/AudioSource";
 import Sources, { SourceType } from "./Sources";
 
 export default class Track {
@@ -24,7 +23,7 @@ export default class Track {
 		this.url = url;
 	}
 
-	public async stream(): Promise<Readable> {
+	public async stream(): Promise<Streamable> {
 		return this.source.stream(this);
 	}
 }
