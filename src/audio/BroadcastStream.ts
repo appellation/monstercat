@@ -32,7 +32,7 @@ export default class BroadcastStream {
 		if (this._stream && typeof this._stream === 'object') this._stream.destroy();
 		this._stream = await this.track.stream();
 
-		this._dispatcher = this.broadcast.play(this._stream);
+		this._dispatcher = this.broadcast.play(this._stream, { highWaterMark: 50 });
 		this._registerListeners();
 
 		this.logger.info('started track %s', this.track.url);
