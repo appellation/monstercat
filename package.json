@@ -8,7 +8,7 @@
     "@keyv/redis": "^1.3.8",
     "axios": "^0.18.0",
     "discord-akairo": "^8.0.0-beta.8",
-    "discord.js": "github:discordjs/discord.js",
+    "discord.js": "github:discordjs/discord.js#d1c4d423e9c7d9c8af9f9b562d1aeac1a29df317",
     "javelin": "^0.3.3",
     "keyv": "^3.1.0",
     "m3u8-parser": "^4.3.0",
