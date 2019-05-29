@@ -1,6 +1,7 @@
 import { inspect } from 'util';
 import { Command } from 'discord-akairo';
 import { Message } from 'discord.js';
+import axios from 'axios';
 
 export default class EvalCommand extends Command {
   constructor() {
@@ -16,6 +17,25 @@ export default class EvalCommand extends Command {
   }
 
   public async exec(message: Message, args: any) {
-    return message.util!.reply(inspect(eval(args.code), { depth: 1 }), { code: 'js' });
+    let result: any;
+    try {
+      result = await eval(args.code);
+    } catch (e) {
+      result = e;
+    }
+
+    let text = inspect(result, { depth: 1 });
+    if (text.length > 1990) {
+      let key: string;
+      try {
+        ({ data: { key } } = await axios.post('https://paste.nomsy.net/documents', text));
+      } catch {
+        return message.util!.reply('Unable to display error or upload to Hastebin.');
+      }
+
+      return message.util!.reply(`https://paste.nomsy.net/${key}.js`);
+    }
+
+    return message.util!.reply(text, { code: 'js' });
   }
 }
