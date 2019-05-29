@@ -23,7 +23,7 @@ export default class BroadcastStream {
 	};
 
 	constructor(public readonly broadcast: VoiceBroadcast, public readonly track: Track) {
-		this.start();
+		this.start().catch(e => this.logger.error(e));
 	}
 
 	public async start(): Promise<void> {
