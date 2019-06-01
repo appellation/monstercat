@@ -6,8 +6,6 @@ export interface SourcesOptions {
 }
 
 export enum SourceType {
-	// TWITCH,
-	// YOUTUBE,
 	MIXER,
 }
 

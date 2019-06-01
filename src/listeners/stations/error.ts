@@ -1,8 +1,8 @@
 import { Listener, ListenerHandler } from 'discord-akairo';
-import { Signale } from 'signale';
+import { Logger } from 'winston';
 
 export default class ErrorListener extends Listener {
-  public logger: Signale;
+  public logger: Logger;
 
   constructor(handler: ListenerHandler) {
     super('stations-error', {
@@ -11,7 +11,7 @@ export default class ErrorListener extends Listener {
     });
 
     this.client = handler.client;
-    this.logger = this.client.logger.scope('keyv');
+    this.logger = this.client.logger.child({ service: 'keyv' });
   }
 
   exec(error: Error) {

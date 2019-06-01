@@ -1,10 +1,11 @@
 import { BroadcastDispatcher, StreamDispatcher, VoiceBroadcast, VoiceConnection } from 'discord.js';
-import { Signale } from 'signale';
+import { Logger } from 'winston';
 import Track from './Track';
 import { Streamable } from './sources/AudioSource';
+import logger from '../logger';
 
 export default class BroadcastStream {
-	public readonly logger: Signale = new Signale({ scope: 'broadcast stream' });
+	public readonly logger: Logger = logger.child({ service: this.constructor.name });
 
 	protected _stream?: Streamable;
 	protected _dispatcher?: BroadcastDispatcher;
@@ -18,7 +19,7 @@ export default class BroadcastStream {
 			this.start();
 		},
 		debug: (info: string) => {
-			this.logger.debug('[debug]', info);
+			this.logger.debug(info);
 		},
 	};
 

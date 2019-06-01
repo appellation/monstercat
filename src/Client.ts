@@ -2,16 +2,17 @@ import { Client as Javelin } from 'javelin';
 import { AkairoClient, CommandHandler, ListenerHandler } from 'discord-akairo';
 import Keyv = require('keyv');
 import path = require('path');
-import { Signale } from 'signale';
+import { Logger } from 'winston';
 import Sources from './audio/Sources';
 import Broadcasts from './audio/Broadcasts';
+import logger from './logger';
 
 declare module 'discord-akairo' {
   interface AkairoClient {
     commandHandler: CommandHandler;
     listenerHandler: ListenerHandler;
 
-    logger: Signale;
+    logger: Logger;
     twitch: Javelin;
     sources: Sources;
     broadcasts: Broadcasts;
@@ -22,7 +23,7 @@ declare module 'discord-akairo' {
 export default class MonstercatClient extends AkairoClient {
   public commandHandler: CommandHandler;
   public listenerHandler: ListenerHandler;
-  public readonly logger: Signale;
+  public readonly logger: Logger;
   public twitch: Javelin;
   public sources: Sources;
   public broadcasts: Broadcasts;
@@ -33,7 +34,6 @@ export default class MonstercatClient extends AkairoClient {
     clientID: string,
     twitch: { oauth: string, username: string },
     redis: string,
-    logger: Signale,
   }) {
     super({
       ownerID: options.ownerID,
@@ -44,7 +44,7 @@ export default class MonstercatClient extends AkairoClient {
       ],
     });
 
-    this.logger = options.logger.scope('client');
+    this.logger = logger;
 
     this.commandHandler = new CommandHandler(this, {
       directory: path.resolve(__dirname, 'commands'),
