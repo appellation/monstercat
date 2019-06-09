@@ -1,4 +1,4 @@
-import { BroadcastDispatcher, StreamDispatcher, VoiceBroadcast, VoiceConnection } from 'discord.js';
+import { BroadcastDispatcher, StreamDispatcher, VoiceBroadcast, VoiceConnection, VoiceChannel } from 'discord.js';
 import { Logger } from 'winston';
 import Track from './Track';
 import { Streamable } from './sources/AudioSource';

@@ -10,15 +10,7 @@ module.exports = class extends Command {
   }
 
   public async exec(message: Message) {
-    if (!message.guild!.me) return;
-
-    const conn = (message.guild!.me.voice as any).connection as VoiceConnection | null;
-    if (!conn) return message.util!.reply('I\'m not currently connected to a voice channel.');
-
-    const dispatcher = conn.dispatcher;
-    if (dispatcher) dispatcher.end();
-
-    conn.channel.leave();
+    await this.client.destinations.leave(message.guild!);
     return message.util!.reply('stopped streaming');
   }
 }

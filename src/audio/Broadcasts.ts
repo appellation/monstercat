@@ -13,6 +13,10 @@ export default class Broadcasts extends Map<Broadcast, BroadcastStream> {
 		this.set(Broadcast.UNCAGED, this.createStream('https://mixer.com/monstercat'));
 	}
 
+	public get(key: Broadcast): BroadcastStream {
+		return super.get(key)!;
+	}
+
 	public createStream(query: string): BroadcastStream {
 		return new BroadcastStream(this.voice.createBroadcast(), Track.resolve(this.sources, query));
 	}

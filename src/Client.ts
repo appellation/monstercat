@@ -1,11 +1,12 @@
 import { Client as Javelin } from 'javelin';
 import { AkairoClient, CommandHandler, ListenerHandler } from 'discord-akairo';
-import Keyv = require('keyv');
 import path = require('path');
 import { Logger } from 'winston';
 import Sources from './audio/Sources';
 import Broadcasts from './audio/Broadcasts';
 import logger from './logger';
+import Redis = require('ioredis');
+import DestinationStore from './audio/DestinationStore';
 
 declare module 'discord-akairo' {
   interface AkairoClient {
@@ -16,7 +17,8 @@ declare module 'discord-akairo' {
     twitch: Javelin;
     sources: Sources;
     broadcasts: Broadcasts;
-    stations: Keyv;
+    redis: Redis.Redis;
+    destinations: DestinationStore;
   }
 }
 
@@ -27,7 +29,8 @@ export default class MonstercatClient extends AkairoClient {
   public twitch: Javelin;
   public sources: Sources;
   public broadcasts: Broadcasts;
-  public stations: Keyv;
+  public redis: Redis.Redis;
+  public destinations: DestinationStore;
 
   constructor(options: {
     ownerID: string,
@@ -66,12 +69,10 @@ export default class MonstercatClient extends AkairoClient {
 
     this.sources = new Sources();
     this.broadcasts = new Broadcasts(this.voice!, this.sources);
-    this.stations = new Keyv(options.redis, { namespace: 'stations' });
+    this.redis = new Redis(options.redis);
+    this.destinations = new DestinationStore(this.redis);
 
-    this.listenerHandler.setEmitters({
-      twitch: this.twitch,
-      stations: this.stations,
-    });
+    this.listenerHandler.setEmitters({ twitch: this.twitch });
 
     this.listenerHandler.loadAll();
     this.commandHandler.loadAll();
