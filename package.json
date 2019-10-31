@@ -5,7 +5,7 @@
   "main": "dist/src/index.js",
   "bin": "dist/bin/index.js",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "discord-akairo": "^8.0.0-beta.8",
     "discord.js": "github:discordjs/discord.js#d1c4d423e9c7d9c8af9f9b562d1aeac1a29df317",
     "ioredis": "^4.9.5",
